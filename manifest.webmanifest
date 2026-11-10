@@ -1,0 +1,18 @@
+{
+  "id": "./",
+  "name": "Orbiview — The world's favorite screen",
+  "short_name": "Orbiview",
+  "description": "Spin the globe to see every country's Netflix drama and movie Top 10",
+  "lang": "en",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "categories": ["entertainment"],
+  "icons": [
+    {"src": "./assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "./assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}
+  ]
+}

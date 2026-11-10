@@ -1,0 +1,70 @@
+/* Netflix-like palette: black ground, a red glow from the top-right corner, white type, red as the only accent. */
+:root {
+  color-scheme: dark;
+  --bg: #000;
+  --surface: #141414;
+  --surface-2: #1f1f1f;
+  --line: rgba(255, 255, 255, .12);
+  --text: #fff;
+  --muted: #a3a3a3;
+  --red: #e50914;
+  --red-deep: #b20710;
+  --red-soft: rgba(229, 9, 20, .16);
+  --ok: #46d369;
+  --gradient: linear-gradient(135deg, #ff2a36 0%, #e50914 55%, #b20710 100%);
+  --glow: radial-gradient(120% 75% at 100% 0%, rgba(229, 9, 20, .42) 0%, rgba(229, 9, 20, .12) 38%, transparent 62%);
+  font-family: 'Netflix Sans', 'Helvetica Neue', Helvetica, Arial, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Hiragino Sans', 'PingFang SC', sans-serif;
+  color: var(--text);
+  background-color: var(--bg);
+  background-image: var(--glow);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-width: 320px;
+  color: var(--text);
+  background: none;
+}
+
+button, input, select, textarea { font: inherit; }
+button, a, input { -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; color: inherit; border: 0; background: none; padding: 0; }
+button:disabled { opacity: .4; cursor: default; }
+a { color: inherit; text-decoration: none; }
+button, a { touch-action: manipulation; }
+button:focus-visible, a:focus-visible, canvas:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vertical-align: middle;
+}
+
+button span[data-icon] { display: inline-flex; }
+[hidden] { display: none !important; }
+::selection { color: #fff; background: rgba(229, 9, 20, .55); }
+
+h1, h2, h3 { margin: 0; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.subtle { color: var(--muted); font-size: 12px; line-height: 1.7; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+}

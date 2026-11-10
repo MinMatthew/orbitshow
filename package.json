@@ -1,0 +1,15 @@
+{
+  "name": "orbiview",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A globe-based PWA for every country's Netflix drama and movie Top 10",
+  "scripts": {
+    "start": "python3 server.py",
+    "test": "node --test tests/unit.test.js && python3 -m unittest discover -s tests -p 'test_*.py'",
+    "data:netflix": "python3 scripts/fetch_netflix.py",
+    "data:tmdb": "python3 scripts/fetch_tmdb.py",
+    "data:build": "python3 scripts/build_ranks.py",
+    "data": "npm run data:netflix && npm run data:tmdb && npm run data:build"
+  }
+}
