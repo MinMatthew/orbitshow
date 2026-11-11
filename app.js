@@ -3,7 +3,7 @@ import { countries, countryByCode, hasRanks, detectCountry, savedServiceCountry,
 import { createGlobe } from './globe.js';
 import { setupPWA } from './pwa.js';
 import { applyLocale, countryLabel, t, lang, SUPPORTED, LANG_NAMES, setLangPref } from './i18n.js';
-import { loadIndex, loadRanks, WORLD, posterUrl, displayTitle, synopsis, isOnNetflix } from './ranks.js';
+import { loadIndex, loadRanks, WORLD, posterUrl, displayTitle, synopsis, isOnNetflix, trailerId } from './ranks.js';
 import { genreNames } from './genres.js';
 
 document.querySelectorAll('[data-icon]').forEach(el => { el.innerHTML = icon(el.dataset.icon); });
@@ -261,6 +261,7 @@ function openDetail(entry) {
     ? `<span class="chip">${esc(t('ui.ratingNone'))}</span>`
     : `<span class="chip rating">${icon('star')}<b>${info.rating.toFixed(1)}</b><small>${esc(t('ui.votes', { n: (info.voteCount || 0).toLocaleString(lang) }))}</small></span>`;
   const count = entry.availability.netflixCountries.length;
+  const trailer = trailerId(entry);
   $('detail-body').innerHTML = `<div class="detail-hero${poster ? '' : ' no-poster'}">${poster ? `<img class="detail-poster" src="${esc(poster)}" alt="${esc(t('detail.poster', { title }))}">` : icon(entry.type)}</div>`
     + '<div class="detail-content">'
     + `<p class="detail-kicker">${esc(t('detail.rankIn', { rank: entry.rank, scope }))} · ${esc(weeks)}</p>`
@@ -268,6 +269,7 @@ function openDetail(entry) {
     + `<p class="detail-meta">${esc(meta.join(' · '))}</p>`
     + `<div class="detail-chips">${ratingChip}${genres.map(name => `<span class="chip">${esc(name)}</span>`).join('')}</div>`
     + `<div class="detail-service ${onNetflix ? 'ok' : 'no'}">${icon(onNetflix ? 'check' : 'x')}<span>${esc(t(onNetflix ? 'ui.availYesLong' : 'ui.availNoLong', { country: homeName }))}${count ? `<small>${esc(t('ui.availCount', { n: count }))}</small>` : ''}</span></div>`
+    + (trailer ? `<button class="trailer-button" id="trailer-open" type="button">${icon('play')}<span>${esc(t('detail.trailer'))}</span></button>` : '')
     + `<h3>${esc(t('detail.synopsis'))}</h3><p class="detail-synopsis">${esc(synopsis(entry) || t('detail.noSynopsis'))}</p>`
     + (original ? `<p class="detail-original">${esc(original)}</p>` : '')
     + `<div class="detail-actions"><a class="pill-button" href="https://www.netflix.com/search?q=${encodeURIComponent(entry.netflix.title)}" target="_blank" rel="noopener noreferrer">${esc(t('detail.netflixSearch'))}</a>`
@@ -280,6 +282,21 @@ function openDetail(entry) {
     hero.classList.add('no-poster');
     hero.innerHTML = icon(entry.type);
   }, { once: true });
+  // The player is only created on tap, so opening a title never contacts YouTube.
+  if (trailer) {
+    $('trailer-open').onclick = event => {
+      const frame = document.createElement('div');
+      frame.className = 'trailer-frame';
+      const player = document.createElement('iframe');
+      player.src = `https://www.youtube-nocookie.com/embed/${trailer}?autoplay=1&rel=0&playsinline=1`;
+      player.title = t('detail.trailerOf', { title });
+      player.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      player.allowFullscreen = true;
+      player.referrerPolicy = 'strict-origin-when-cross-origin';
+      frame.append(player);
+      event.currentTarget.replaceWith(frame);
+    };
+  }
   const dialog = $('detail-dialog');
   dialog.scrollTop = 0;
   if (!dialog.open) dialog.showModal();
@@ -325,6 +342,8 @@ $('world-button').onclick = () => {
 $('country-open').onclick = () => { countryOptions(); $('country-search').value = ''; $('country-dialog').showModal(); $('country-search').focus(); };
 $('country-search').oninput = event => countryOptions(event.target.value);
 $('settings-open').onclick = () => $('settings-dialog').showModal();
+// Emptying the popup also stops a playing trailer.
+$('detail-dialog').addEventListener('close', () => $('detail-body').replaceChildren());
 document.querySelectorAll('[data-close]').forEach(button => { button.onclick = () => button.closest('dialog').close(); });
 document.querySelectorAll('dialog').forEach(dialog => dialog.addEventListener('click', event => {
   if (event.target !== dialog) return;

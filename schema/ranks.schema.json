@@ -105,6 +105,11 @@
           "description": "Localised titles by UI language.",
           "additionalProperties": { "type": "string" }
         },
+        "trailers": {
+          "type": "object",
+          "description": "Official YouTube trailer ids by UI language; empty when there is none, and the app then hides the trailer button.",
+          "additionalProperties": { "type": "string", "pattern": "^[\\w-]{11}$" }
+        },
         "confidence": { "type": "number", "minimum": 0, "maximum": 1, "description": "Title similarity of the chosen TMDb match." }
       }
     }

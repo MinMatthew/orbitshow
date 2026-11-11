@@ -18,7 +18,7 @@ NETFLIX = ROOT / "data" / "netflix-latest.json"
 CACHE = ROOT / "data" / "tmdb-cache.json"
 OUT = ROOT / "ranks"
 SCHEMA = 1
-TMDB_FIELDS = ("id", "mediaType", "title", "originalTitle", "year", "genreIds", "rating", "voteCount", "posterPath", "runtime", "seasons", "overview", "titles", "confidence")
+TMDB_FIELDS = ("id", "mediaType", "title", "originalTitle", "year", "genreIds", "rating", "voteCount", "posterPath", "runtime", "seasons", "overview", "titles", "trailers", "confidence")
 
 
 def now():

@@ -76,6 +76,22 @@ class TmdbStep(unittest.TestCase):
         self.assertEqual(record["netflixCountries"], ["fr", "kr"])
         self.assertEqual(record["mediaType"], "tv")
 
+    def test_trailers_pick_the_best_official_youtube_trailer_per_language(self):
+        def video(site, kind, lang, key, official=False, published="2024-01-01"):
+            return {"site": site, "type": kind, "iso_639_1": lang, "key": key, "official": official, "published_at": published}
+
+        videos = {"results": [
+            video("YouTube", "Trailer", "en", "aaaaaaaaaaa", False, "2024-05-01"),
+            video("YouTube", "Trailer", "en", "bbbbbbbbbbb", True),
+            video("YouTube", "Trailer", "ko", "ccccccccccc", True),
+            video("Vimeo", "Trailer", "ja", "ddddddddddd"),
+            video("YouTube", "Teaser", "de", "eeeeeeeeeee"),
+            video("YouTube", "Trailer", "fr", "bad key!"),
+            video("YouTube", "Trailer", "xx", "fffffffffff"),
+        ]}
+        self.assertEqual(fetch_tmdb.trailers({"videos": videos}), {"en": "bbbbbbbbbbb", "ko": "ccccccccccc"})
+        self.assertEqual(fetch_tmdb.trailers({}), {})
+
     def test_unrated_titles_have_no_rating(self):
         record = fetch_tmdb.build("film", {"id": 1, "title": "New", "vote_average": 0, "vote_count": 0}, 0.9, "2026-11-10")
         self.assertIsNone(record["rating"])

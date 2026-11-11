@@ -95,6 +95,19 @@ def score(result, queries):
     return best
 
 
+def trailers(data):
+    """Best official YouTube trailer per UI language: {lang: video id}."""
+    best = {}
+    for video in (data.get("videos") or {}).get("results", []):
+        lang, key = video.get("iso_639_1"), video.get("key") or ""
+        if video.get("site") != "YouTube" or video.get("type") != "Trailer" or lang not in LANGS or not re.fullmatch(r"[\w-]{11}", key):
+            continue
+        order = (bool(video.get("official")), video.get("published_at") or "")
+        if lang not in best or order > best[lang][0]:
+            best[lang] = (order, key)
+    return {lang: key for lang, (_, key) in best.items()}
+
+
 def build(kind, data, confidence, today):
     overview = {"en": data.get("overview") or ""}
     titles = {}
@@ -129,6 +142,7 @@ def build(kind, data, confidence, today):
         "seasons": data.get("number_of_seasons"),
         "overview": {k: v for k, v in overview.items() if v},
         "titles": titles,
+        "trailers": trailers(data),
         "netflixCountries": netflix,
         "confidence": round(confidence, 2),
         "checkedAt": today,
@@ -136,7 +150,7 @@ def build(kind, data, confidence, today):
 
 
 def details(kind, tmdb_id):
-    return request(f"/{media(kind)}/{tmdb_id}", language="en-US", append_to_response="translations,watch/providers")
+    return request(f"/{media(kind)}/{tmdb_id}", language="en-US", append_to_response="translations,watch/providers,videos", include_video_language=",".join(LANGS) + ",null")
 
 
 def match(job, today):
@@ -202,7 +216,8 @@ def main():
             return "match"
         age = date.today() - date.fromisoformat(old["checkedAt"])
         if old["status"] == "matched":
-            return "refresh" if age >= REFRESH_AFTER else None
+            # Entries cached before trailers existed are filled in on the next run.
+            return "refresh" if age >= REFRESH_AFTER or "trailers" not in old else None
         return "match" if age >= RETRY_UNMATCHED_AFTER else None
 
     todo = [(key, job, action) for key, job in jobs.items() if (action := due(key, job))][:limit]

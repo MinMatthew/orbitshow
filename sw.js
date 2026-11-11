@@ -1,5 +1,5 @@
 // Bump VERSION on every release that changes a precached file: the new worker installs a full copy of the shell before it takes over.
-const VERSION = 'v4';
+const VERSION = 'v5';
 const SHELL = `orbitshow-shell-${VERSION}`;
 const RANKS = 'orbitshow-ranks-v1';
 const IMAGES = 'orbitshow-images-v1';

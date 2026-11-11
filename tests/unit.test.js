@@ -58,6 +58,7 @@ function checkEntry(entry, kind, where) {
     assert.ok(tmdb.rating === null || (tmdb.rating >= 0 && tmdb.rating <= 10), `${where}: rating`);
     assert.ok(tmdb.posterPath === null || /^\/[\w.-]+$/.test(tmdb.posterPath), `${where}: poster path`);
     assert.equal(typeof tmdb.overview, 'object');
+    assert.ok(Object.values(tmdb.trailers ?? {}).every(id => /^[\w-]{11}$/.test(id)), `${where}: trailer ids`);
   }
 }
 

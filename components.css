@@ -353,6 +353,10 @@ dialog [data-close] svg { width: 16px; height: 16px; stroke-linecap: round; }
 .detail-service small { display: block; margin-top: 2px; color: var(--muted); font-size: 11px; font-weight: 500; }
 .detail-service.ok { color: var(--ok); background: rgba(70, 211, 105, .1); }
 .detail-service.no { color: #ff7078; background: var(--red-soft); }
+.trailer-button { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 44px; margin-top: 10px; color: #fff; background: var(--red); border-radius: 10px; font-size: 13px; font-weight: 700; }
+.trailer-button svg { width: 16px; height: 16px; }
+.trailer-frame { margin-top: 10px; overflow: hidden; aspect-ratio: 16 / 9; background: #000; border-radius: 10px; }
+.trailer-frame iframe { display: block; width: 100%; height: 100%; border: 0; }
 .detail-content h3 { margin-top: 18px; }
 .detail-synopsis { margin: 6px 0 0; }
 .detail-original { margin: 10px 0 0; color: var(--muted) !important; font-size: 12px !important; }

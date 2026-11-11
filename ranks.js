@@ -45,3 +45,10 @@ export async function loadRanks(scope) {
 export const displayTitle = entry => entry.tmdb?.titles?.[lang] || entry.tmdb?.title || entry.netflix.title;
 export const synopsis = entry => entry.tmdb?.overview?.[lang] || entry.tmdb?.overview?.en || '';
 export const isOnNetflix = (entry, code) => entry.availability.netflixCountries.includes(code);
+
+// UI language first, then English, then any language; ids that are not plain YouTube ids are dropped.
+export function trailerId(entry) {
+  const all = entry.tmdb?.trailers ?? {};
+  const id = all[lang] || all.en || Object.values(all)[0] || '';
+  return /^[\w-]{11}$/.test(id) ? id : '';
+}
