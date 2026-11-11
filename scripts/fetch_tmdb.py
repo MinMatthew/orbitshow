@@ -30,6 +30,20 @@ THRESHOLD = 0.86
 REFRESH_AFTER = timedelta(days=7)
 RETRY_UNMATCHED_AFTER = timedelta(days=14)
 FORGET_AFTER = timedelta(days=60)
+
+
+def load_env():
+    """Local runs read the git-ignored .env written by scripts/set_tmdb_secrets.sh; CI passes real environment variables."""
+    path = ROOT / ".env"
+    if not path.exists():
+        return
+    for line in path.read_text(encoding="utf-8").splitlines():
+        name, sep, value = line.partition("=")
+        if sep and name.strip() and not name.lstrip().startswith("#"):
+            os.environ.setdefault(name.strip(), value.strip().strip("\"'"))
+
+
+load_env()
 TOKEN = os.environ.get("TMDB_READ_TOKEN", "")
 KEY = os.environ.get("TMDB_API_KEY", "")
 

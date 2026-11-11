@@ -25,7 +25,7 @@ Netflix ranking and TMDb metadata are collected separately and merged into `rank
 | 2 | `scripts/fetch_tmdb.py` | step 1 + TMDb API | `data/tmdb-cache.json` |
 | 3 | `scripts/build_ranks.py` | steps 1 and 2 | `ranks/<cc>.json`, `ranks/world.json`, `ranks/index.json` |
 
-Step 2 needs `TMDB_READ_TOKEN` (v4 bearer) or `TMDB_API_KEY` (v3) and is skipped without one; the app then shows the Netflix ranking without ratings, genres and posters. Titles are looked up once; only ratings and availability are refreshed weekly. Unmatched titles are retried after 14 days.
+Step 2 needs `TMDB_READ_TOKEN` (v4 bearer) or `TMDB_API_KEY` (v3) and is skipped without one. Run `./scripts/set_tmdb_secrets.sh` to enter them (hidden prompt): it stores them as GitHub Actions secrets and in a git-ignored `.env` for local runs. Without a credential the app shows the Netflix ranking without ratings, genres and posters. Titles are looked up once; only ratings and availability are refreshed weekly. Unmatched titles are retried after 14 days.
 
 `.github/workflows/ranks.yml` runs all three steps daily and commits changes. Add the TMDb credential as a repository secret.
 
