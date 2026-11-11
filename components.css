@@ -296,8 +296,8 @@ dialog [data-close] svg { width: 16px; height: 16px; stroke-linecap: round; }
 #settings-dialog > .settings-close { position: sticky; top: 0; z-index: 5; float: right; margin-left: 10px; }
 #detail-dialog > .detail-close { position: sticky; top: 10px; z-index: 5; display: flex; margin: 10px 10px -44px auto; background: rgba(0, 0, 0, .7); border: 1px solid rgba(255, 255, 255, .3); }
 
-.settings-title { font-size: 20px; }
-.setting-field { margin: 18px 0 0; padding: 0; border: 0; min-width: 0; }
+.setting-field { clear: both; margin: 4px 0 0; padding: 0; border: 0; min-width: 0; }
+.setting-field + .setting-field { margin-top: 18px; }
 .setting-field legend { padding: 0; font-size: 14px; font-weight: 700; }
 
 .setting-field select {
