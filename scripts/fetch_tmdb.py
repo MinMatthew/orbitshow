@@ -22,10 +22,11 @@ from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parent.parent
 NETFLIX = ROOT / "data" / "netflix-latest.json"
+DISNEY = ROOT / "data" / "disney-latest.json"
 CACHE = ROOT / "data" / "tmdb-cache.json"
 API = "https://api.themoviedb.org/3"
 LANGS = ("en", "ko", "ja", "zh", "es", "fr", "de")  # keep in sync with SUPPORTED in i18n.js
-NETFLIX_PROVIDER = 8
+PROVIDERS = {"netflix": 8, "disney": 337}  # TMDb watch-provider ids
 THRESHOLD = 0.86
 REFRESH_AFTER = timedelta(days=7)
 RETRY_UNMATCHED_AFTER = timedelta(days=14)
@@ -108,6 +109,15 @@ def trailers(data):
     return {lang: key for lang, (_, key) in best.items()}
 
 
+def provider_countries(data):
+    """Countries where each supported service streams the title (flatrate): {service: [cc, ...]}."""
+    results = (data.get("watch/providers") or {}).get("results", {})
+    return {
+        service: sorted(cc.lower() for cc, value in results.items() if any(p.get("provider_id") == provider for p in value.get("flatrate", [])))
+        for service, provider in PROVIDERS.items()
+    }
+
+
 def build(kind, data, confidence, today):
     overview = {"en": data.get("overview") or ""}
     titles = {}
@@ -121,8 +131,6 @@ def build(kind, data, confidence, today):
         name = body.get("name") or body.get("title")
         if name and (lang not in titles or item.get("iso_3166_1") in ("KR", "JP", "CN", "ES", "FR", "DE")):
             titles[lang] = name
-    providers = (data.get("watch/providers") or {}).get("results", {})
-    netflix = sorted(cc.lower() for cc, value in providers.items() if any(p.get("provider_id") == NETFLIX_PROVIDER for p in value.get("flatrate", [])))
     release = data.get("first_air_date") or data.get("release_date") or ""
     votes = data.get("vote_count") or 0
     runtime = data.get("runtime") or (data.get("episode_run_time") or [None])[0]
@@ -144,7 +152,7 @@ def build(kind, data, confidence, today):
         "overview": {k: v for k, v in overview.items() if v},
         "titles": titles,
         "trailers": trailers(data),
-        "netflixCountries": netflix,
+        "streaming": provider_countries(data),
         "confidence": round(confidence, 2),
         "checkedAt": today,
     }
@@ -169,12 +177,24 @@ def match(job, today):
             continue
         chosen = chosen or (confidence, data)
         # Titles share names with older works; the one Netflix carries where it ranked is the right one.
-        if ranked & {cc.lower() for cc, v in (data.get("watch/providers") or {}).get("results", {}).items() if any(p.get("provider_id") == NETFLIX_PROVIDER for p in v.get("flatrate", []))}:
+        if ranked & set(provider_countries(data)["netflix"]):
             chosen = (confidence, data)
             break
     if not chosen:
         return {"status": "unmatched", "query": query, "kind": kind, "checkedAt": today}
     return {**build(kind, chosen[1], chosen[0], today), "query": query, "kind": kind}
+
+
+def id_key(kind, tmdb_id):
+    return f"id:{media(kind)}:{tmdb_id}"
+
+
+def lookup_id(job, today):
+    """Disney+ lists come from TMDb itself, so the title is already identified."""
+    data = details(job["kind"], job["id"])
+    if not data:
+        return {"status": "unmatched", "query": job["query"], "kind": job["kind"], "checkedAt": today}
+    return {**build(job["kind"], data, 1.0, today), "query": job["query"], "kind": job["kind"]}
 
 
 def refresh(old, today):
@@ -184,7 +204,7 @@ def refresh(old, today):
     return {**build(old["kind"], data, old.get("confidence", 1), today), "query": old["query"], "kind": old["kind"]}
 
 
-def wanted(netflix):
+def wanted(netflix, disney=None):
     jobs = {}
     def add(kind, title, country):
         job = jobs.setdefault(cache_key(kind, title), {"kind": kind, "query": title, "countries": set()})
@@ -197,6 +217,10 @@ def wanted(netflix):
     for kind in ("tv", "film"):
         for row in netflix["world"][kind]:
             add(kind, row["title"], None)
+    for block in [*(disney or {}).get("countries", {}).values(), (disney or {}).get("world", {})]:
+        for kind in ("tv", "film"):
+            for row in block.get(kind, []):
+                jobs.setdefault(id_key(kind, row["id"]), {"kind": kind, "id": row["id"], "query": row["title"], "countries": set()})
     return jobs
 
 
@@ -209,7 +233,7 @@ def main():
     items = cache["items"]
     today = date.today().isoformat()
     limit = int(sys.argv[sys.argv.index("--limit") + 1]) if "--limit" in sys.argv else None
-    jobs = wanted(netflix)
+    jobs = wanted(netflix, json.loads(DISNEY.read_text(encoding="utf-8")) if DISNEY.exists() else None)
 
     def due(key, job):
         old = items.get(key)
@@ -218,7 +242,7 @@ def main():
         age = date.today() - date.fromisoformat(old["checkedAt"])
         if old["status"] == "matched":
             # Entries cached before a field existed are filled in on the next run.
-            return "refresh" if age >= REFRESH_AFTER or any(field not in old for field in ("trailers", "originalLanguage")) else None
+            return "refresh" if age >= REFRESH_AFTER or any(field not in old for field in ("trailers", "originalLanguage", "streaming")) else None
         return "match" if age >= RETRY_UNMATCHED_AFTER else None
 
     todo = [(key, job, action) for key, job in jobs.items() if (action := due(key, job))][:limit]
@@ -226,7 +250,9 @@ def main():
     def work(entry):
         key, job, action = entry
         try:
-            return key, (match(job, today) if action == "match" else refresh(items[key], today))
+            if action != "match":
+                return key, refresh(items[key], today)
+            return key, (lookup_id(job, today) if "id" in job else match(job, today))
         except Exception as error:  # one bad title must not lose the whole run; it is retried next time
             print(f"  failed: {key}: {error}")
             return key, None

@@ -1,6 +1,6 @@
 # Orbitshow
 
-Spin the globe, pick a country, see its Netflix **Drama Rank** and **Movie Rank**.
+Spin the globe, pick a country, see its Netflix (or Disney+) **Drama Rank** and **Movie Rank**. Choose the service in Options; Disney+ switches the whole UI to its colours.
 A static PWA built on Orbitone's globe and country selection. *The world's favorite screen.*
 
 - Default view: country browsing (globe + arrows + search + favorites).
@@ -17,13 +17,14 @@ npm test                     # node tests + python tests
 
 ## Data pipeline (static JSON, no server)
 
-Netflix ranking and TMDb metadata are collected separately and merged into `ranks/`.
+Each service's ranking and the TMDb metadata are collected separately and merged into `ranks/` (Netflix) and `ranks/disney/`.
 
 | Step | Script | Reads | Writes |
 | --- | --- | --- | --- |
 | 1 | `scripts/fetch_netflix.py` | Netflix Top 10 TSV (public, no key) | `data/netflix-latest.json` |
-| 2 | `scripts/fetch_tmdb.py` | step 1 + TMDb API | `data/tmdb-cache.json` |
-| 3 | `scripts/build_ranks.py` | steps 1 and 2 | `ranks/<cc>.json`, `ranks/world.json`, `ranks/index.json` |
+| 1b | `scripts/fetch_disney.py` | TMDb discover (needs the credential; weekly) | `data/disney-latest.json` |
+| 2 | `scripts/fetch_tmdb.py` | steps 1 and 1b + TMDb API | `data/tmdb-cache.json` |
+| 3 | `scripts/build_ranks.py` | steps 1 and 2 | `ranks/<cc>.json`, `ranks/world.json`, `ranks/index.json`, and the same under `ranks/disney/` |
 
 Step 2 needs `TMDB_READ_TOKEN` (v4 bearer) or `TMDB_API_KEY` (v3) and is skipped without one. Run `./scripts/set_tmdb_secrets.sh` to enter them (hidden prompt): it stores them as GitHub Actions secrets and in a git-ignored `.env` for local runs. Without a credential the app shows the Netflix ranking without ratings, genres and posters. Titles are looked up once; only ratings and availability are refreshed weekly. Unmatched titles are retried after 14 days.
 
@@ -45,9 +46,13 @@ Defined in [`schema/ranks.schema.json`](schema/ranks.schema.json). In short:
 }
 ```
 
-Entry: `{ rank, type, netflix: { title, seasonTitle, weeksInTop10 }, tmdb: null | { id, mediaType, title, year, genreIds, rating, voteCount, posterPath, overview: { en, ko, ... }, titles, confidence }, availability: { netflixCountries: ["kr", ...] } }`.
+Entry: `{ rank, type, listing: { title, seasonTitle, weeksInTop10 } /* Disney+: { title, popularity } */, tmdb: null | { id, mediaType, title, year, genreIds, rating, voteCount, posterPath, overview: { en, ko, ... }, titles, confidence }, availability: { netflixCountries: ["kr", ...] } }`.
 
-`availability.netflixCountries` is the union of countries where the title ranked this week (proof it is on Netflix there) and TMDb's Netflix flatrate countries. The list view compares it with your Netflix country.
+`availability.countries` is the union of countries where the title ranked (proof the service carries it there) and TMDb's flatrate countries for that service. The list view compares it with your Netflix country.
+
+### Disney+ is an approximation
+
+Disney+ publishes no ranking. Its lists are the most popular (TMDb popularity) titles streaming on Disney+ in each country that premiered in the last 90 days, widened to 180 or 365 days until there are 10. World = titles that appear most widely and highly across countries. The UI says so ("Approximate") wherever the list is shown. Availability data comes from JustWatch via TMDb.
 
 ## Offline and updates
 
@@ -55,4 +60,4 @@ Entry: `{ rank, type, netflix: { title, seasonTitle, weeksInTop10 }, tmdb: null 
 
 ## Credits
 
-Rankings: Netflix Top 10. This product uses the TMDB API but is not endorsed or certified by TMDB. Orbitshow is not affiliated with Netflix. Globe geometry: world-atlas (see `assets/WORLD-ATLAS-LICENSE`), D3 and TopoJSON in `vendor/`.
+Rankings: Netflix Top 10; Disney+ lists are derived from TMDb popularity. Streaming availability: JustWatch via TMDB. This product uses the TMDB API but is not endorsed or certified by TMDB. Orbitshow is not affiliated with Netflix or Disney. Globe geometry: world-atlas (see `assets/WORLD-ATLAS-LICENSE`), D3 and TopoJSON in `vendor/`.

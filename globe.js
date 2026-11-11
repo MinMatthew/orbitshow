@@ -1,7 +1,12 @@
 import { $, getJSON } from './lib.js';
 import { countries, hasRanks } from './data.js';
 
-export async function createGlobe(onSelect, onWorld, initial = countries[0]) {
+export async function createGlobe(onSelect, onWorld, initial = countries[0], service = 'netflix') {
+ const PALETTES = {
+  netflix: {halo:['#e5091470','#e5091428','#e5091400'],sphere:'#0b0b0b',ocean:['#2c1417','#170d0f','#0a0707'],active:'#e50914',activeStroke:'#ff8a8f',worldFill:'#7a1a20',worldStroke:'#b23a42',charted:'#4b4b4b',chartedStroke:'#6e6e6e',land:'#262626',landStroke:'#3a3a3a',marker:'#8a8a8a',markerOff:'#3a3a3a',markerWorld:'#b23a42'},
+  disney: {halo:['#1a52ff70','#1a52ff28','#1a52ff00'],sphere:'#050816',ocean:['#16245c','#0a1340','#040820'],active:'#2f8cff',activeStroke:'#bcd9ff',worldFill:'#1d3d9e',worldStroke:'#4f7dff',charted:'#3a4c8f',chartedStroke:'#5d73c4',land:'#1a2146',landStroke:'#2a3566',marker:'#7f90d8',markerOff:'#2a3566',markerWorld:'#4f7dff'}
+ };
+ let P = PALETTES[service] || PALETTES.netflix;
  const canvas = $('globe'), ctx = canvas.getContext('2d');
  if (!window.d3 || !window.topojson || !ctx) throw new Error('Globe dependencies unavailable');
  const d3 = window.d3;
@@ -24,15 +29,15 @@ export async function createGlobe(onSelect, onWorld, initial = countries[0]) {
   ctx.clearRect(0,0,width,height);
   // Deterministic stars keep the canvas still when idle (no perpetual animation loop).
     for(let i=0;i<45;i++){ctx.fillStyle=`rgba(255,255,255,${.06+(i%4)*.05})`;ctx.beginPath();ctx.arc((i*97+31)%width,(i*67+17)%height,i%3===0?1:.5,0,Math.PI*2);ctx.fill();}
-    const globeRadius=radius*zoom,halo=ctx.createRadialGradient(width/2,centerY,globeRadius*.96,width/2,centerY,globeRadius+26);halo.addColorStop(0,'#e5091470');halo.addColorStop(.35,'#e5091428');halo.addColorStop(1,'#e5091400');ctx.beginPath();ctx.arc(width/2,centerY,globeRadius+26,0,Math.PI*2);ctx.fillStyle=halo;ctx.fill();
-    ctx.beginPath();path({type:'Sphere'});ctx.fillStyle='#0b0b0b';ctx.fill();
+    const globeRadius=radius*zoom,halo=ctx.createRadialGradient(width/2,centerY,globeRadius*.96,width/2,centerY,globeRadius+26);halo.addColorStop(0,P.halo[0]);halo.addColorStop(.35,P.halo[1]);halo.addColorStop(1,P.halo[2]);ctx.beginPath();ctx.arc(width/2,centerY,globeRadius+26,0,Math.PI*2);ctx.fillStyle=halo;ctx.fill();
+    ctx.beginPath();path({type:'Sphere'});ctx.fillStyle=P.sphere;ctx.fill();
     const ocean=ctx.createRadialGradient(width/2-radius*.4,centerY-radius*.5,10,width/2,centerY,radius);
-    ocean.addColorStop(0,'#2c1417');ocean.addColorStop(.58,'#170d0f');ocean.addColorStop(1,'#0a0707');
+    ocean.addColorStop(0,P.ocean[0]);ocean.addColorStop(.58,P.ocean[1]);ocean.addColorStop(1,P.ocean[2]);
   ctx.beginPath();path({type:'Sphere'});ctx.fillStyle=ocean;ctx.fill();
     ctx.beginPath();path(grid);ctx.strokeStyle='#ffffff14';ctx.lineWidth=.5;ctx.stroke();
-    for(const f of features){ctx.beginPath();path(f);const id=featureId(f),active=!!selected&&id===selected.id,listed=byId.get(id),charted=!!listed&&hasRanks(listed);ctx.fillStyle=active?'#e50914':charted?(world?'#7a1a20':'#4b4b4b'):'#262626';ctx.strokeStyle=active?'#ff8a8f':charted?(world?'#b23a42':'#6e6e6e'):'#3a3a3a';ctx.lineWidth=active?1.3:.55;ctx.fill();ctx.stroke();}
+    for(const f of features){ctx.beginPath();path(f);const id=featureId(f),active=!!selected&&id===selected.id,listed=byId.get(id),charted=!!listed&&hasRanks(listed);ctx.fillStyle=active?P.active:charted?(world?P.worldFill:P.charted):P.land;ctx.strokeStyle=active?P.activeStroke:charted?(world?P.worldStroke:P.chartedStroke):P.landStroke;ctx.lineWidth=active?1.3:.55;ctx.fill();ctx.stroke();}
     const view=projection.invert([width/2,centerY]);
-    for(const c of markers){if(d3.geoDistance(view,c.center)>=Math.PI/2)continue;const [x,y]=projection(c.center),active=!!selected&&c.id===selected.id;ctx.beginPath();ctx.arc(x,y,active?4.2:2.6,0,Math.PI*2);ctx.fillStyle=active?'#e50914':hasRanks(c)?(world?'#b23a42':'#8a8a8a'):'#3a3a3a';ctx.fill();ctx.strokeStyle=active?'#ff8a8f':'#ffffff55';ctx.lineWidth=active?1.3:.8;ctx.stroke();}
+    for(const c of markers){if(d3.geoDistance(view,c.center)>=Math.PI/2)continue;const [x,y]=projection(c.center),active=!!selected&&c.id===selected.id;ctx.beginPath();ctx.arc(x,y,active?4.2:2.6,0,Math.PI*2);ctx.fillStyle=active?P.active:hasRanks(c)?(world?P.markerWorld:P.marker):P.markerOff;ctx.fill();ctx.strokeStyle=active?P.activeStroke:'#ffffff55';ctx.lineWidth=active?1.3:.8;ctx.stroke();}
     const shade=ctx.createRadialGradient(width/2-radius*.38,centerY-radius*.45,radius*.2,width/2,centerY,radius);shade.addColorStop(0,'#ffffff14');shade.addColorStop(.75,'#ffffff00');shade.addColorStop(1,'#00000066');ctx.beginPath();path({type:'Sphere'});ctx.fillStyle=shade;ctx.fill();
     ctx.beginPath();path({type:'Sphere'});ctx.strokeStyle='#ffffff40';ctx.lineWidth=.8;ctx.stroke();
   const center=projection.invert([width/2,centerY]);
@@ -62,5 +67,5 @@ export async function createGlobe(onSelect, onWorld, initial = countries[0]) {
  canvas.addEventListener('contextlost',e=>e.preventDefault());canvas.addEventListener('contextrestored',resize);
  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')resize();});window.addEventListener('pageshow',resize);
  new ResizeObserver(resize).observe(canvas);resize();$('globe-loading').hidden=true;
- return {select:snap,refresh:draw,pulse,setWorld(on){world=!!on;if(world)selected=null;draw();}};
+ return {select:snap,refresh:draw,pulse,setService(name){P=PALETTES[name]||PALETTES.netflix;draw();},setWorld(on){world=!!on;if(world)selected=null;draw();}};
 }

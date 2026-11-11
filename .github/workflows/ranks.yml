@@ -20,6 +20,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: Fetch Netflix Top 10
         run: python3 scripts/fetch_netflix.py
+      - name: Fetch Disney+ approximate ranking
+        env:
+          TMDB_READ_TOKEN: ${{ secrets.TMDB_READ_TOKEN }}
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+        run: python3 scripts/fetch_disney.py
       - name: Match TMDb metadata
         env:
           TMDB_READ_TOKEN: ${{ secrets.TMDB_READ_TOKEN }}

@@ -1,6 +1,18 @@
 // Newest first. Each entry lists what got better for users, per language; `en` is the fallback.
 export const UPDATES = [
   {
+    date: '2026-11-12',
+    notes: {
+      en: ['New: choose Disney+ in Options. The screen switches to Disney+ colours and shows its approximate ranking: the most popular recent releases by TMDb popularity (Disney+ publishes no official ranking).'],
+      ko: ['새 기능: 옵션에서 디즈니+를 선택할 수 있어요. 화면이 디즈니+ 색으로 바뀌고, TMDb 인기도 기준 최근 인기 신작 근사 순위를 보여줘요. (디즈니+는 공식 순위를 공개하지 않아요.)'],
+      ja: ['新機能：オプションで Disney+ を選べます。画面が Disney+ の色に変わり、TMDb の人気度による最近の人気新作の概算ランキングを表示します（Disney+ は公式ランキングを公開していません）。'],
+      zh: ['新功能：可在选项中选择 Disney+。界面会切换为 Disney+ 配色，并按 TMDb 热度显示近期热门新作的估算榜单（Disney+ 不公布官方榜单）。'],
+      es: ['Novedad: elige Disney+ en Opciones. La pantalla cambia a los colores de Disney+ y muestra su ranking aproximado: los estrenos recientes más populares según TMDb (Disney+ no publica un ranking oficial).'],
+      fr: ['Nouveau : choisissez Disney+ dans les Options. L’écran passe aux couleurs de Disney+ et affiche son classement approximatif : les sorties récentes les plus populaires selon TMDb (Disney+ ne publie pas de classement officiel).'],
+      de: ['Neu: Wähle in den Optionen Disney+. Die Oberfläche wechselt zu den Disney+-Farben und zeigt die Näherung einer Rangliste: die beliebtesten neuen Titel nach TMDb-Popularität (Disney+ veröffentlicht keine offizielle Rangliste).']
+    }
+  },
+  {
     date: '2026-11-11',
     notes: {
       en: ['Titles now appear in your app language wherever TMDb has a translation.', 'Watch a title\'s trailer from its detail popup.', 'The World button plays the same pull-back animation as pinching the globe.'],

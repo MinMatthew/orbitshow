@@ -1,15 +1,18 @@
-/* Netflix-like palette: black ground, a red glow from the top-right corner, white type, red as the only accent. */
+/* Colours follow the chosen service (html[data-service]): Netflix is black with a red glow, Disney+ is deep navy with a blue glow. */
 :root {
   color-scheme: dark;
   --bg: #000;
   --surface: #141414;
   --surface-2: #1f1f1f;
+  --field: #0b0b0b;
   --line: rgba(255, 255, 255, .12);
   --text: #fff;
   --muted: #a3a3a3;
-  --red: #e50914;
-  --red-deep: #b20710;
-  --red-soft: rgba(229, 9, 20, .16);
+  --accent: #e50914;
+  --accent-rgb: 229, 9, 20;
+  --accent-light: #ff4350;
+  --poster-from: #2a0b0e;
+  --bad-soft: rgba(229, 9, 20, .16);
   --ok: #46d369;
   --gradient: linear-gradient(135deg, #ff2a36 0%, #e50914 55%, #b20710 100%);
   --glow: radial-gradient(120% 75% at 100% 0%, rgba(229, 9, 20, .42) 0%, rgba(229, 9, 20, .12) 38%, transparent 62%);
@@ -19,6 +22,21 @@
   background-image: var(--glow);
   background-repeat: no-repeat;
   background-attachment: fixed;
+}
+
+:root[data-service="disney"] {
+  --bg: #040714;
+  --surface: #0d1229;
+  --surface-2: #181f42;
+  --field: #070b1f;
+  --line: rgba(190, 205, 255, .16);
+  --muted: #9aa5cc;
+  --accent: #0063e5;
+  --accent-rgb: 0, 99, 229;
+  --accent-light: #5aa5ff;
+  --poster-from: #12205a;
+  --gradient: linear-gradient(135deg, #3a8bff 0%, #0063e5 55%, #113ccf 100%);
+  --glow: radial-gradient(120% 75% at 100% 0%, rgba(26, 82, 255, .5) 0%, rgba(17, 60, 207, .2) 38%, transparent 66%), radial-gradient(90% 50% at 0% 100%, rgba(60, 40, 160, .22), transparent 70%);
 }
 
 * { box-sizing: border-box; }
@@ -51,7 +69,7 @@ svg {
 
 button span[data-icon] { display: inline-flex; }
 [hidden] { display: none !important; }
-::selection { color: #fff; background: rgba(229, 9, 20, .55); }
+::selection { color: #fff; background: rgba(var(--accent-rgb), .55); }
 
 h1, h2, h3 { margin: 0; }
 

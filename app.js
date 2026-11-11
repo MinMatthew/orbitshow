@@ -3,14 +3,18 @@ import { countries, countryByCode, hasRanks, detectCountry, savedServiceCountry,
 import { createGlobe } from './globe.js';
 import { setupPWA } from './pwa.js';
 import { applyLocale, countryLabel, t, lang, SUPPORTED, LANG_NAMES, setLangPref } from './i18n.js';
-import { loadIndex, loadRanks, WORLD, posterUrl, displayTitle, synopsis, isOnNetflix, trailerId } from './ranks.js';
+import { loadIndex, loadRanks, WORLD, SERVICES, posterUrl, displayTitle, synopsis, isAvailable, trailerId } from './ranks.js';
 import { genreNames } from './genres.js';
 import { renderUpdates } from './updates.js';
 
 document.querySelectorAll('[data-icon]').forEach(el => { el.innerHTML = icon(el.dataset.icon); });
 document.querySelectorAll('[data-close]').forEach(el => { el.innerHTML = icon('close'); });
 
-// `home` is the Netflix country whose catalog the user has (availability badges); `country` is the one being browsed.
+// `home` is the country whose catalog the user has (availability badges); `country` is the one being browsed.
+const SERVICE_KEY = 'orbitshow-service';
+const savedService = () => { try { return localStorage.getItem(SERVICE_KEY) === 'disney' ? 'disney' : 'netflix'; } catch { return 'netflix'; } };
+let service = savedService();
+const serviceName = () => SERVICES[service].name;
 const detected = detectCountry();
 let home = savedServiceCountry() ?? detected.country;
 let country = home;
@@ -56,14 +60,14 @@ function renderNav() {
     $('country-name').textContent = t('ui.worldName');
     $('country-en').textContent = t('ui.worldSub');
     $('country-fav').hidden = true;
-    $('rank-heading').textContent = t('ui.worldHeading');
+    $('rank-heading').textContent = t(service === 'disney' ? 'ui.worldHeadingDisney' : 'ui.worldHeading');
   } else {
     $('country-code').textContent = country.code?.toUpperCase() || '—';
     $('country-name').textContent = label.name;
     $('country-en').textContent = label.sub;
     $('country-fav').hidden = false;
     renderFavorite();
-    $('rank-heading').textContent = t('ui.rankHeading', { country: label.name });
+    $('rank-heading').textContent = t(service === 'disney' ? 'ui.rankHeadingDisney' : 'ui.rankHeading', { country: label.name });
   }
   const button = $('world-button');
   button.setAttribute('aria-pressed', String(world));
@@ -160,14 +164,14 @@ function renderRank(entry) {
   button.type = 'button';
   button.className = 'rank-row';
   const genres = genreNames(entry.tmdb?.genreIds, 2);
-  const onNetflix = isOnNetflix(entry, home.code);
+  const onService = isAvailable(entry, home.code);
   const poster = posterUrl(entry.tmdb?.posterPath, 'w154');
   const rating = entry.tmdb?.rating;
-  const availability = t(onNetflix ? 'ui.availYes' : 'ui.availNo', { cc: home.code.toUpperCase() });
+  const availability = t(onService ? 'ui.availYes' : 'ui.availNo', { cc: home.code.toUpperCase(), service: serviceName() });
   button.innerHTML = `<span class="rank-num">${entry.rank}</span>`
     + `<span class="poster">${poster ? `<img src="${esc(poster)}" alt="" loading="lazy" decoding="async">` : icon(entry.type)}</span>`
     + `<span class="row-meta"><strong>${esc(displayTitle(entry))}</strong><small>${esc(genres.join(' · ') || t('ui.genreNone'))}</small>`
-    + `<span class="badge ${onNetflix ? 'ok' : 'no'}">${icon(onNetflix ? 'check' : 'x')}${esc(availability)}</span></span>`
+    + `<span class="badge ${onService ? 'ok' : 'no'}">${icon(onService ? 'check' : 'x')}${esc(availability)}</span></span>`
     + `<span class="score${rating == null ? ' none' : ''}" title="${esc(t('ui.rating'))}">${icon('star')}<b>${rating == null ? '—' : rating.toFixed(1)}</b></span>`;
   button.querySelector('img')?.addEventListener('error', event => { event.target.parentElement.innerHTML = icon(entry.type); }, { once: true });
   button.onclick = () => openDetail(entry);
@@ -186,7 +190,9 @@ function renderRows() {
 function renderStatus() {
   const parts = [];
   if (stale) parts.push(t('ui.savedRanking'));
-  parts.push(t('ui.week', { date: dayFormat(doc.week) }));
+  // Netflix publishes weekly; Disney+ lists are an approximation, and the status says so.
+  if (service === 'disney') parts.push(t('ui.basisDisney', { days: doc.basis?.windowDays?.[tab] ?? 90 }));
+  else parts.push(t('ui.week', { date: dayFormat(doc.week) }));
   if (doc.updatedAt) parts.push(t('ui.updated', { date: stampFormat(doc.updatedAt) }));
   const matched = [...doc.lists.tv, ...doc.lists.film].some(entry => entry.tmdb);
   if (!matched) parts.push(t('ui.metaPending'));
@@ -199,14 +205,14 @@ async function show() {
   if (!world && !hasRanks(country)) {
     setBusy(false);
     setStatus('', false);
-    renderMessage(t('ui.noRankTitle'), t('ui.noRankBody', { country: countryLabel(country).name }));
+    renderMessage(t('ui.noRankTitle'), t('ui.noRankBody', { country: countryLabel(country).name, service: serviceName() }));
     return;
   }
   setBusy(true);
   setStatus(t('ui.loading'));
   renderSkeleton();
   try {
-    const result = await loadRanks(world ? WORLD : country.code);
+    const result = await loadRanks(service, world ? WORLD : country.code);
     if (token !== loadToken) return;
     doc = result.doc;
     stale = result.stale;
@@ -226,7 +232,7 @@ function showTab(name) {
     $(`tab-${id}`).setAttribute('aria-selected', String(id === name));
     $(`tab-${id}`).tabIndex = id === name ? 0 : -1;
   }
-  if (doc) renderRows();
+  if (doc) { renderStatus(); renderRows(); }
 }
 
 for (const id of ['tv', 'film']) {
@@ -247,33 +253,35 @@ function openDetail(entry) {
   const scope = world ? t('ui.worldName') : countryLabel(country).name;
   const poster = posterUrl(info?.posterPath, 'w500');
   const genres = genreNames(info?.genreIds, 4);
-  const onNetflix = isOnNetflix(entry, home.code);
+  const onService = isAvailable(entry, home.code);
   const homeName = countryLabel(home).name;
+  const listing = entry.listing;
   const meta = [
     t(entry.type === 'tv' ? 'ui.typeTv' : 'ui.typeFilm'),
     info?.year,
     info?.seasons ? t('detail.seasons', { n: info.seasons }) : null,
     entry.type === 'film' && info?.runtime ? t('detail.runtime', { n: info.runtime }) : null,
-    entry.netflix.seasonTitle && entry.netflix.seasonTitle !== entry.netflix.title ? entry.netflix.seasonTitle : null
+    listing.seasonTitle && listing.seasonTitle !== listing.title ? listing.seasonTitle : null
   ].filter(Boolean);
   const original = info?.originalTitle && info.originalTitle !== title ? t('detail.original', { title: info.originalTitle }) : '';
-  const weeks = entry.netflix.weeksInTop10 > 1 ? t('ui.weeksIn', { n: entry.netflix.weeksInTop10 }) : t('ui.weeksNew');
+  // Weeks in the Top 10 exist only for Netflix.
+  const weeks = listing.weeksInTop10 == null ? '' : listing.weeksInTop10 > 1 ? t('ui.weeksIn', { n: listing.weeksInTop10 }) : t('ui.weeksNew');
   const ratingChip = info?.rating == null
     ? `<span class="chip">${esc(t('ui.ratingNone'))}</span>`
     : `<span class="chip rating">${icon('star')}<b>${info.rating.toFixed(1)}</b><small>${esc(t('ui.votes', { n: (info.voteCount || 0).toLocaleString(lang) }))}</small></span>`;
-  const count = entry.availability.netflixCountries.length;
+  const count = entry.availability.countries.length;
   const trailer = trailerId(entry);
   $('detail-body').innerHTML = `<div class="detail-hero${poster ? '' : ' no-poster'}">${poster ? `<img class="detail-poster" src="${esc(poster)}" alt="${esc(t('detail.poster', { title }))}">` : icon(entry.type)}</div>`
     + '<div class="detail-content">'
-    + `<p class="detail-kicker">${esc(t('detail.rankIn', { rank: entry.rank, scope }))} · ${esc(weeks)}</p>`
+    + `<p class="detail-kicker">${esc(t('detail.rankIn', { rank: entry.rank, scope }))}${weeks ? ` · ${esc(weeks)}` : ''}</p>`
     + `<h2 id="detail-title">${esc(title)}</h2>`
     + `<p class="detail-meta">${esc(meta.join(' · '))}</p>`
     + `<div class="detail-chips">${ratingChip}${genres.map(name => `<span class="chip">${esc(name)}</span>`).join('')}</div>`
-    + `<div class="detail-service ${onNetflix ? 'ok' : 'no'}">${icon(onNetflix ? 'check' : 'x')}<span>${esc(t(onNetflix ? 'ui.availYesLong' : 'ui.availNoLong', { country: homeName }))}${count ? `<small>${esc(t('ui.availCount', { n: count }))}</small>` : ''}</span></div>`
+    + `<div class="detail-service ${onService ? 'ok' : 'no'}">${icon(onService ? 'check' : 'x')}<span>${esc(t(onService ? 'ui.availYesLong' : 'ui.availNoLong', { country: homeName, service: serviceName() }))}${count ? `<small>${esc(t('ui.availCount', { n: count, service: serviceName() }))}</small>` : ''}</span></div>`
     + (trailer ? `<button class="trailer-button" id="trailer-open" type="button">${icon('play')}<span>${esc(t('detail.trailer'))}</span></button>` : '')
     + `<h3>${esc(t('detail.synopsis'))}</h3><p class="detail-synopsis">${esc(synopsis(entry) || t('detail.noSynopsis'))}</p>`
     + (original ? `<p class="detail-original">${esc(original)}</p>` : '')
-    + `<div class="detail-actions"><a class="pill-button" href="https://www.netflix.com/search?q=${encodeURIComponent(entry.netflix.title)}" target="_blank" rel="noopener noreferrer">${esc(t('detail.netflixSearch'))}</a>`
+    + `<div class="detail-actions">${service === 'netflix' ? `<a class="pill-button" href="https://www.netflix.com/search?q=${encodeURIComponent(listing.title)}" target="_blank" rel="noopener noreferrer">${esc(t('detail.netflixSearch'))}</a>` : ''}`
     + (info ? `<a class="pill-button" href="https://www.themoviedb.org/${info.mediaType === 'tv' ? 'tv' : 'movie'}/${Number(info.id)}" target="_blank" rel="noopener noreferrer">${esc(t('detail.tmdbPage'))}</a>` : '')
     + '</div>'
     + (info ? `<p class="detail-note">${esc(t('detail.tmdbNote'))}</p>` : '')
@@ -328,6 +336,30 @@ function renderSettings() {
   };
   const via = t(`settings.via${detected.via[0].toUpperCase()}${detected.via.slice(1)}`);
   $('country-detected').textContent = t('settings.detected', { country: countryLabel(detected.country).name, via });
+  document.querySelectorAll('input[name=service]').forEach(radio => {
+    radio.checked = radio.value === service;
+    radio.onchange = () => { if (radio.checked) changeService(radio.value); };
+  });
+}
+
+function applyTheme() {
+  document.documentElement.dataset.service = service;
+  document.querySelector('meta[name="theme-color"]').content = service === 'disney' ? '#040714' : '#000000';
+  globe?.setService(service);
+}
+
+async function changeService(next) {
+  if (next === service) return;
+  service = next;
+  try { localStorage.setItem(SERVICE_KEY, service); } catch { /* storage unavailable: the choice lasts for this session */ }
+  applyTheme();
+  await loadIndex(service);
+  if (service !== next) return;
+  globe?.refresh();
+  if (!world && !hasRanks(country) && hasRanks(home)) country = home;
+  if (!world) globe?.select(country);
+  renderNav();
+  show();
 }
 
 // ---------- Wiring ----------
@@ -425,9 +457,9 @@ setupPWA();
 renderNav();
 show();
 // Ranking availability per country is only needed for the globe colours and the "no ranking" state.
-loadIndex().then(() => {
+loadIndex(service).then(() => {
   globe?.refresh();
   renderSettings();
   if (!world && !hasRanks(country)) show();
 });
-createGlobe(selectCountry, enterWorld, country).then(g => { globe = g; g.select(country); }).catch(() => { $('globe-loading').textContent = t('ui.globeFailed'); });
+createGlobe(selectCountry, enterWorld, country, service).then(g => { globe = g; g.select(country); }).catch(() => { $('globe-loading').textContent = t('ui.globeFailed'); });

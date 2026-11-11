@@ -41,17 +41,23 @@ test('an unknown zone uses the language, then the US', () => {
   try { assert.deepEqual([detectCountry().country.code, detectCountry().via], ['us', 'default']); } finally { restore(); }
 });
 
-test('every country Netflix publishes exists in the country list', () => {
-  const index = read('ranks/index.json');
-  for (const code of Object.keys(index.countries)) assert.ok(countryByCode(code), `missing ${code}`);
+const services = [
+  { name: 'netflix', dir: 'ranks', method: 'netflix-top10' },
+  { name: 'disney', dir: 'ranks/disney', method: 'tmdb-popularity' }
+];
+
+test('every country a service publishes exists in the country list', () => {
+  for (const { dir } of services) {
+    for (const code of Object.keys(read(`${dir}/index.json`).countries)) assert.ok(countryByCode(code), `missing ${code}`);
+  }
 });
 
-function checkEntry(entry, kind, where) {
+function checkEntry(entry, kind, service, where) {
   assert.equal(entry.type, kind, where);
-  assert.ok(entry.netflix.title, `${where}: title`);
-  assert.ok(Number.isInteger(entry.netflix.weeksInTop10), `${where}: weeks`);
-  assert.ok(Array.isArray(entry.availability.netflixCountries), `${where}: availability`);
-  assert.ok(entry.availability.netflixCountries.every(c => /^[a-z]{2}$/.test(c)), `${where}: country codes`);
+  assert.ok(entry.listing.title, `${where}: title`);
+  if (service === 'netflix') assert.ok(Number.isInteger(entry.listing.weeksInTop10), `${where}: weeks`);
+  assert.ok(Array.isArray(entry.availability.countries), `${where}: availability`);
+  assert.ok(entry.availability.countries.every(c => /^[a-z]{2}$/.test(c)), `${where}: country codes`);
   if (entry.tmdb) {
     const { tmdb } = entry;
     assert.ok(Number.isInteger(tmdb.id) && tmdb.title && Array.isArray(tmdb.genreIds), `${where}: tmdb shape`);
@@ -62,32 +68,39 @@ function checkEntry(entry, kind, where) {
   }
 }
 
-test('every ranks/*.json follows the schema', () => {
-  const files = readdirSync(join(root, 'ranks')).filter(f => f.endsWith('.json') && f !== 'index.json');
-  assert.ok(files.length > 30);
-  for (const file of files) {
-    const doc = read(`ranks/${file}`);
-    const where = file;
-    assert.equal(doc.schema, 1, where);
-    assert.equal(doc.scope, file === 'world.json' ? 'world' : 'country', where);
-    assert.equal(doc.country, doc.scope === 'world' ? null : file.replace('.json', ''), where);
-    assert.match(doc.week, /^\d{4}-\d{2}-\d{2}$/, where);
-    assert.ok(!Number.isNaN(Date.parse(doc.updatedAt)), where);
-    for (const kind of ['tv', 'film']) {
-      const rows = doc.lists[kind];
-      assert.ok(rows.length <= 10, where);
-      assert.deepEqual(rows.map(r => r.rank), rows.map((_, i) => i + 1), `${where}: ranks`);
-      rows.forEach(entry => checkEntry(entry, kind, `${where} ${kind} #${entry.rank}`));
-      // A Top 10 spot is itself proof that Netflix carries the title there.
-      if (doc.scope === 'country') rows.forEach(entry => assert.ok(entry.availability.netflixCountries.includes(doc.country), `${where}: ${entry.netflix.title} should be available in its own ranking country`));
+for (const { name, dir, method } of services) {
+  test(`every ${dir}/*.json follows the schema`, () => {
+    const files = readdirSync(join(root, dir)).filter(f => f.endsWith('.json') && f !== 'index.json');
+    assert.ok(files.length > 30);
+    for (const file of files) {
+      const doc = read(`${dir}/${file}`);
+      const where = `${name}/${file}`;
+      assert.equal(doc.schema, 1, where);
+      assert.equal(doc.service, name, where);
+      assert.equal(doc.basis.method, method, where);
+      assert.equal(doc.scope, file === 'world.json' ? 'world' : 'country', where);
+      assert.equal(doc.country, doc.scope === 'world' ? null : file.replace('.json', ''), where);
+      assert.match(doc.week, /^\d{4}-\d{2}-\d{2}$/, where);
+      assert.ok(!Number.isNaN(Date.parse(doc.updatedAt)), where);
+      assert.ok(doc.sources[name] && doc.sources.tmdb, where);
+      for (const kind of ['tv', 'film']) {
+        const rows = doc.lists[kind];
+        assert.ok(rows.length <= 10, where);
+        assert.deepEqual(rows.map(r => r.rank), rows.map((_, i) => i + 1), `${where}: ranks`);
+        rows.forEach(entry => checkEntry(entry, kind, name, `${where} ${kind} #${entry.rank}`));
+        // A spot in a country's list is itself proof that the service carries the title there.
+        if (doc.scope === 'country') rows.forEach(entry => assert.ok(entry.availability.countries.includes(doc.country), `${where}: ${entry.listing.title} should be available in its own ranking country`));
+        if (method === 'tmdb-popularity') assert.ok(Number.isInteger(doc.basis.windowDays[kind]), `${where}: window`);
+      }
     }
-  }
-});
+  });
 
-test('the index lists every country file as available', () => {
-  const index = read('ranks/index.json');
-  const files = new Set(readdirSync(join(root, 'ranks')));
-  for (const [code, status] of Object.entries(index.countries)) {
-    assert.equal(files.has(`${code}.json`), status === 'available', code);
-  }
-});
+  test(`the ${dir} index lists every country file as available`, () => {
+    const index = read(`${dir}/index.json`);
+    const files = new Set(readdirSync(join(root, dir)));
+    assert.equal(index.service, name);
+    for (const [code, status] of Object.entries(index.countries)) {
+      assert.equal(files.has(`${code}.json`), status === 'available', `${name} ${code}`);
+    }
+  });
+}
