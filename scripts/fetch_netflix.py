@@ -22,7 +22,7 @@ WORLD_SIZE = 10
 
 
 def rows(url):
-    request = Request(url, headers={"User-Agent": "Orbiview-ranks/1.0"})
+    request = Request(url, headers={"User-Agent": "Orbitshow-ranks/1.0"})
     with urlopen(request, timeout=120) as response:
         yield from csv.DictReader(io.TextIOWrapper(response, encoding="utf-8", newline=""), delimiter="\t")
 

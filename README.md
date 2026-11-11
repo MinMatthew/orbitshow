@@ -1,4 +1,4 @@
-# Orbiview
+# Orbitshow
 
 Spin the globe, pick a country, see its Netflix **Drama Rank** and **Movie Rank**.
 A static PWA built on Orbitone's globe and country selection. *The world's favorite screen.*
@@ -55,4 +55,4 @@ Entry: `{ rank, type, netflix: { title, seasonTitle, weeksInTop10 }, tmdb: null 
 
 ## Credits
 
-Rankings: Netflix Top 10. This product uses the TMDB API but is not endorsed or certified by TMDB. Orbiview is not affiliated with Netflix. Globe geometry: world-atlas (see `assets/WORLD-ATLAS-LICENSE`), D3 and TopoJSON in `vendor/`.
+Rankings: Netflix Top 10. This product uses the TMDB API but is not endorsed or certified by TMDB. Orbitshow is not affiliated with Netflix. Globe geometry: world-atlas (see `assets/WORLD-ATLAS-LICENSE`), D3 and TopoJSON in `vendor/`.

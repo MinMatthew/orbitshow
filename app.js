@@ -21,7 +21,7 @@ let loadToken = 0;
 let globe = null;
 
 const favorites = new Set((() => {
-  const saved = readStore('orbiview-favorites', []);
+  const saved = readStore('orbitshow-favorites', []);
   return Array.isArray(saved) ? saved.filter(code => typeof code === 'string') : [];
 })());
 
@@ -43,7 +43,7 @@ function toggleFavorite() {
   if (!country.code) return;
   const added = !favorites.has(country.code);
   if (added) favorites.add(country.code); else favorites.delete(country.code);
-  writeStore('orbiview-favorites', [...favorites]);
+  writeStore('orbitshow-favorites', [...favorites]);
   renderFavorite();
   toast(added ? (favorites.size === 1 ? t('ui.favAddedFirst') : t('ui.favAdded')) : (favorites.size ? t('ui.favRemoved') : t('ui.favRemovedLast')));
 }
@@ -331,7 +331,7 @@ document.querySelectorAll('dialog').forEach(dialog => dialog.addEventListener('c
 window.addEventListener('online', () => { if (!doc || stale) show(); });
 
 // ---------- Intro and splash ----------
-const INTRO_KEY = 'orbiview-intro-seen';
+const INTRO_KEY = 'orbitshow-intro-seen';
 const intro = $('globe-intro');
 const introStores = [() => localStorage, () => sessionStorage];
 function introSeen() {

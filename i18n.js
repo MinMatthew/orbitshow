@@ -6,7 +6,7 @@ const escapeHTML = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;'
 // It is independent of the Netflix country, which is chosen separately (data.js).
 export const SUPPORTED = ['en', 'ko', 'ja', 'zh', 'es', 'fr', 'de'];
 export const LANG_NAMES = { en: 'English', ko: '한국어', ja: '日本語', zh: '简体中文', es: 'Español', fr: 'Français', de: 'Deutsch' };
-const LANG_KEY = 'orbiview-lang';
+const LANG_KEY = 'orbitshow-lang';
 const tags = navigator.languages?.length ? [...navigator.languages] : [navigator.language || 'en'];
 const primary = tag => String(tag || '').toLowerCase().split('-')[0];
 const forced = new URLSearchParams(location.search).get('lang');
@@ -37,7 +37,7 @@ const rich = text => escapeHTML(text)
 
 export function applyLocale() {
   document.documentElement.lang = lang;
-  document.title = `Orbiview — ${t('ui.tagline')}`;
+  document.title = `Orbitshow — ${t('ui.tagline')}`;
   document.querySelectorAll('[data-i18n]').forEach(el => { el.innerHTML = rich(t(el.dataset.i18n)); });
   document.querySelectorAll('[data-i18n-aria]').forEach(el => { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
   document.querySelectorAll('[data-i18n-title]').forEach(el => { el.title = t(el.dataset.i18nTitle); });

@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://orbiview.app/schema/ranks.schema.json",
-  "title": "Orbiview ranking document (ranks/<cc>.json and ranks/world.json)",
+  "$id": "https://minmatthew.github.io/orbitshow/schema/ranks.schema.json",
+  "title": "Orbitshow ranking document (ranks/<cc>.json and ranks/world.json)",
   "description": "Netflix Top 10 ranking merged with TMDb metadata. Netflix supplies rank, title and weeks in the Top 10; TMDb supplies rating, genres, poster and synopsis. `tmdb` is null when a title could not be matched.",
   "type": "object",
   "required": ["schema", "scope", "country", "week", "updatedAt", "sources", "lists"],

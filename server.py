@@ -1,4 +1,4 @@
-"""Local static server for Orbiview, using only Python's standard library."""
+"""Local static server for Orbitshow, using only Python's standard library."""
 import argparse
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
@@ -22,7 +22,7 @@ if __name__ == "__main__":
     parser.add_argument("--host", default="127.0.0.1")
     args = parser.parse_args()
     server = ThreadingHTTPServer((args.host, args.port), partial(Handler, directory=str(ROOT)))
-    print(f"Orbiview: http://{args.host}:{args.port}", flush=True)
+    print(f"Orbitshow: http://{args.host}:{args.port}", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

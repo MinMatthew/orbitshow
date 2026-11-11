@@ -1,8 +1,8 @@
 // Bump VERSION on every release that changes a precached file: the new worker installs a full copy of the shell before it takes over.
-const VERSION = 'v1';
-const SHELL = `orbiview-shell-${VERSION}`;
-const RANKS = 'orbiview-ranks-v1';
-const IMAGES = 'orbiview-images-v1';
+const VERSION = 'v2';
+const SHELL = `orbitshow-shell-${VERSION}`;
+const RANKS = 'orbitshow-ranks-v1';
+const IMAGES = 'orbitshow-images-v1';
 const MAX_IMAGES = 150;
 const RANK_TIMEOUT = 6000;
 const FILES = [
@@ -18,7 +18,7 @@ self.addEventListener('install', event => {
 
 self.addEventListener('activate', event => {
   const keep = [SHELL, RANKS, IMAGES];
-  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('orbiview-') && !keep.includes(key)).map(key => caches.delete(key)))).then(() => self.clients.claim()));
+  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('orbitshow-') && !keep.includes(key)).map(key => caches.delete(key)))).then(() => self.clients.claim()));
 });
 
 // Rankings change weekly, so the network wins and the last good copy covers offline and slow links.

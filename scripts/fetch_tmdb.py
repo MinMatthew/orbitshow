@@ -45,7 +45,7 @@ def cache_key(kind, title):
 
 
 def request(path, **params):
-    headers = {"User-Agent": "Orbiview-ranks/1.0", "Accept": "application/json"}
+    headers = {"User-Agent": "Orbitshow-ranks/1.0", "Accept": "application/json"}
     if TOKEN or KEY.startswith("eyJ"):
         headers["Authorization"] = f"Bearer {TOKEN or KEY}"
     elif KEY:

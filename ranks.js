@@ -5,8 +5,8 @@ import { lang } from './i18n.js';
 export const WORLD = 'world';
 export const posterUrl = (path, size = 'w185') => (typeof path === 'string' && /^\/[\w.-]+$/.test(path) ? `https://image.tmdb.org/t/p/${size}${path}` : '');
 
-const INDEX_KEY = 'orbiview-rank-index';
-const docKey = scope => `orbiview-ranks-${scope}`;
+const INDEX_KEY = 'orbitshow-rank-index';
+const docKey = scope => `orbitshow-ranks-${scope}`;
 const remember = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch { /* quota or private mode: the service worker cache still covers offline */ } };
 
 function checkDoc(doc) {

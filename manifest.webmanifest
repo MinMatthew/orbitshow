@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "Orbiview — The world's favorite screen",
-  "short_name": "Orbiview",
+  "name": "Orbitshow — The world's favorite screen",
+  "short_name": "Orbitshow",
   "description": "Spin the globe to see every country's Netflix drama and movie Top 10",
   "lang": "en",
   "start_url": "./",

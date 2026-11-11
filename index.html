@@ -1,13 +1,13 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#000000"><meta name="description" content="Spin the globe to see every country's Netflix drama and movie Top 10 — Orbiview"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Orbiview">
-<title>Orbiview — The world's favorite screen</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#000000"><meta name="description" content="Spin the globe to see every country's Netflix drama and movie Top 10 — Orbitshow"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="Orbitshow">
+<title>Orbitshow — The world's favorite screen</title>
 <link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./assets/icon-192.png"><link rel="apple-touch-icon" href="./assets/apple-touch-icon.png"><link rel="stylesheet" href="./theme.css"><link rel="stylesheet" href="./layout.css"><link rel="stylesheet" href="./components.css">
 <script defer src="./vendor/d3.min.js"></script><script defer src="./vendor/topojson.min.js"></script><script type="module" src="./app.js"></script>
 </head>
 <body>
-<div id="splash" class="splash" aria-hidden="true"><div class="splash-lockup"><p class="splash-tagline">The world's favorite <span>screen</span></p><img src="./assets/icon-512.png" alt="" width="120" height="120"><span class="splash-wordmark brand"><span>orbiview<span class="brand-dot">.</span></span></span></div></div>
+<div id="splash" class="splash" aria-hidden="true"><div class="splash-lockup"><p class="splash-tagline">The world's favorite <span>screen</span></p><img src="./assets/icon-512.png" alt="" width="120" height="120"><span class="splash-wordmark brand"><span>orbitshow<span class="brand-dot">.</span></span></span></div></div>
 <script>
 // Keep in sync with i18n.js: ?lang=xx, then the language saved in Options, then the first supported device language.
 (function () {
@@ -23,7 +23,7 @@
   };
   var forced = (location.search.match(/[?&]lang=([a-z]{2})(?:&|$)/) || [])[1];
   var saved = null;
-  try { saved = localStorage.getItem('orbiview-lang'); } catch (e) { /* storage unavailable */ }
+  try { saved = localStorage.getItem('orbitshow-lang'); } catch (e) { /* storage unavailable */ }
   var prefs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || 'en'];
   var lang = supported.indexOf(forced) >= 0 ? forced : supported.indexOf(saved) >= 0 ? saved : 'en';
   if (supported.indexOf(forced) < 0 && supported.indexOf(saved) < 0) {
@@ -41,7 +41,7 @@
 })();
 </script>
 <div class="app-shell">
-<header class="header"><a class="brand" href="./"><img src="./assets/icon-192.png" alt=""><span>orbiview<span class="brand-dot">.</span></span></a><div class="header-actions"><button class="icon-button" id="install" data-i18n-aria="ui.install" aria-label="Install app" data-icon="download" hidden></button><button class="icon-button" id="settings-open" data-i18n-aria="ui.settingsBtn" aria-label="Settings" data-icon="settings"></button></div></header>
+<header class="header"><a class="brand" href="./"><img src="./assets/icon-192.png" alt=""><span>orbitshow<span class="brand-dot">.</span></span></a><div class="header-actions"><button class="icon-button" id="install" data-i18n-aria="ui.install" aria-label="Install app" data-icon="download" hidden></button><button class="icon-button" id="settings-open" data-i18n-aria="ui.settingsBtn" aria-label="Settings" data-icon="settings"></button></div></header>
 <main>
 <section class="explore" data-i18n-aria="ui.region" aria-label="Globe and country selection">
 <div class="globe-stage" id="globe-stage"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><canvas id="globe" data-i18n-aria="ui.globe" aria-label="Globe. Drag to rotate, scroll or pinch to zoom, pinch in to show World Rank, double-tap to reset the size, use the arrow keys to rotate, press Enter to select a country" tabindex="0"></canvas><div class="crosshair" aria-hidden="true"></div><span class="globe-coordinate" id="coordinate">37.6° N · 127.8° E</span><button class="world-button" id="world-button" type="button" aria-pressed="false" data-i18n-aria="ui.worldBtnAria" aria-label="Show the World Rank"><span data-icon="globe"></span><span data-i18n="ui.worldBtn">World</span></button><div class="globe-intro" id="globe-intro" role="dialog" data-i18n-aria="ui.intro" aria-label="Spin the globe with your finger to pick a country. Tap to dismiss." tabindex="-1" hidden><svg class="globe-demo" viewBox="-60 -60 120 120" aria-hidden="true" focusable="false"><defs><clipPath id="demo-clip"><circle r="40"/></clipPath><g id="demo-hand"><rect x="219" y="102" width="54" height="270" rx="27"/><rect x="271" y="212" width="54" height="170" rx="27"/><rect x="321" y="236" width="54" height="150" rx="27"/><rect x="371" y="256" width="52" height="150" rx="26"/><rect x="-28" y="0" width="56" height="130" rx="28" transform="translate(134 220) rotate(-35)"/><path d="M160 290H423V410Q423 440 405 475Q396 500 372 500H265Q240 500 230 480Z"/></g></defs><g class="demo-globe-size" fill="none" stroke="#fff" stroke-linecap="round"><circle r="40" stroke-width="2"/><g clip-path="url(#demo-clip)" stroke-width="1.1" stroke-opacity=".75"><path d="M-40 0H40M-34 -21Q0 -15 34 -21M-34 21Q0 27 34 21"/><ellipse class="demo-meridian demo-m1" rx="40" ry="40"/><ellipse class="demo-meridian demo-m2" rx="40" ry="40"/><ellipse class="demo-meridian demo-m3" rx="40" ry="40"/></g></g><g class="demo-finger" stroke="none"><g class="demo-finger-size"><circle r="11" fill="#fff" fill-opacity=".25"/><g transform="rotate(-10) scale(.115) translate(-246 -130)"><use href="#demo-hand" fill="none" stroke="#000" stroke-opacity=".55" stroke-width="14" stroke-linejoin="round"/><use href="#demo-hand" fill="#fff" stroke="none"/></g></g></g><g transform="translate(23 -22) scale(1.45)"><g class="demo-bang" fill="#fff" stroke="none"><rect x="-3.3" y="-11" width="6.6" height="14.5" rx="3.3"/><circle cy="9" r="3.7"/></g></g></svg><p class="intro-world" data-i18n="ui.introWorld">Pinch in to see the World Rank.</p></div><div class="globe-loading" id="globe-loading" data-i18n="ui.globeLoading">Loading the globe…</div></div>

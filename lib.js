@@ -48,7 +48,7 @@ export async function getJSON(url, timeout = 10000) {
 
 export async function shareText(text, url) {
   try {
-    if (navigator.share) { await navigator.share({ title: 'Orbiview', text, url }); return; }
+    if (navigator.share) { await navigator.share({ title: 'Orbitshow', text, url }); return; }
     await navigator.clipboard.writeText(url ? `${text}\n${url}` : text);
     toast(t('ui.textCopied'));
   } catch (error) {
