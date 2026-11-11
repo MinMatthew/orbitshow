@@ -1,4 +1,4 @@
-import { $, icon, escapeHTML as esc, toast, shareText, readStore, writeStore } from './lib.js';
+import { $, icon, escapeHTML as esc, toast, readStore, writeStore } from './lib.js';
 import { countries, countryByCode, hasRanks, detectCountry, savedServiceCountry, saveServiceCountry } from './data.js';
 import { createGlobe } from './globe.js';
 import { setupPWA } from './pwa.js';
@@ -272,10 +272,9 @@ function openDetail(entry) {
     + (original ? `<p class="detail-original">${esc(original)}</p>` : '')
     + `<div class="detail-actions"><a class="pill-button" href="https://www.netflix.com/search?q=${encodeURIComponent(entry.netflix.title)}" target="_blank" rel="noopener noreferrer">${esc(t('detail.netflixSearch'))}</a>`
     + (info ? `<a class="pill-button" href="https://www.themoviedb.org/${info.mediaType === 'tv' ? 'tv' : 'movie'}/${Number(info.id)}" target="_blank" rel="noopener noreferrer">${esc(t('detail.tmdbPage'))}</a>` : '')
-    + `<button class="pill-button" id="detail-share" type="button">${esc(t('detail.share'))}</button></div>`
+    + '</div>'
     + (info ? `<p class="detail-note">${esc(t('detail.tmdbNote'))}</p>` : '')
     + '</div>';
-  $('detail-share').onclick = () => shareText(t('detail.shareText', { title, rank: entry.rank, scope }), `${location.origin}${location.pathname}`);
   $('detail-body').querySelector('.detail-poster')?.addEventListener('error', event => {
     const hero = event.target.parentElement;
     hero.classList.add('no-poster');

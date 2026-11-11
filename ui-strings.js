@@ -75,8 +75,6 @@ export const UI = {
     'detail.poster': '{title} poster',
     'detail.netflixSearch': 'Search on Netflix',
     'detail.tmdbPage': 'TMDb page',
-    'detail.share': 'Share',
-    'detail.shareText': '{title} is #{rank} on Netflix ({scope}).',
     'detail.tmdbNote': 'Rating, genres and synopsis from TMDb.',
     'settings.title': 'Options',
     'lang.label': 'Language',
@@ -94,8 +92,6 @@ export const UI = {
     'settings.disclaimer': 'Orbitshow is an independent project, not affiliated with or endorsed by Netflix. Netflix is a trademark of Netflix, Inc.',
     'settings.cache': 'Rankings update weekly. A saved copy lets you read the last ranking offline.',
     'ui.storageUnavailable': 'Storage is unavailable, so this will only last for this session.',
-    'ui.textCopied': 'Text copied to the clipboard.',
-    'ui.copyManually': 'Sharing is not available on this device.'
   },
   ko: {
     close: '닫기',
@@ -172,8 +168,6 @@ export const UI = {
     'detail.poster': '{title} 포스터',
     'detail.netflixSearch': '넷플릭스에서 검색',
     'detail.tmdbPage': 'TMDb 페이지',
-    'detail.share': '공유',
-    'detail.shareText': '{title} — 넷플릭스 {scope} {rank}위',
     'detail.tmdbNote': '평점, 장르, 줄거리는 TMDb 제공.',
     'settings.title': '옵션',
     'lang.label': '언어',
@@ -191,8 +185,6 @@ export const UI = {
     'settings.disclaimer': 'Orbitshow는 넷플릭스와 무관한 독립 프로젝트이며 넷플릭스의 후원이나 승인을 받지 않았습니다. Netflix는 Netflix, Inc.의 상표입니다.',
     'settings.cache': '랭킹은 매주 갱신돼요. 저장된 사본으로 오프라인에서도 마지막 랭킹을 볼 수 있어요.',
     'ui.storageUnavailable': '저장 공간을 사용할 수 없어 이번 세션에서만 유지돼요.',
-    'ui.textCopied': '텍스트를 클립보드에 복사했어요.',
-    'ui.copyManually': '이 기기에서는 공유를 사용할 수 없어요.'
   },
   ja: {
     close: '閉じる',
@@ -269,8 +261,6 @@ export const UI = {
     'detail.poster': '{title} のポスター',
     'detail.netflixSearch': 'Netflix で検索',
     'detail.tmdbPage': 'TMDb ページ',
-    'detail.share': '共有',
-    'detail.shareText': '{title} — Netflix {scope} {rank}位',
     'detail.tmdbNote': '評価・ジャンル・あらすじは TMDb 提供。',
     'settings.title': 'オプション',
     'lang.label': '言語',
@@ -288,8 +278,6 @@ export const UI = {
     'settings.disclaimer': 'Orbitshow は Netflix とは無関係の独立したプロジェクトで、Netflix の承認を受けていません。Netflix は Netflix, Inc. の商標です。',
     'settings.cache': 'ランキングは毎週更新されます。保存済みのコピーで、最後のランキングをオフラインでも見られます。',
     'ui.storageUnavailable': 'ストレージを使用できないため、このセッションの間だけ保持されます。',
-    'ui.textCopied': 'テキストをクリップボードにコピーしました。',
-    'ui.copyManually': 'この端末では共有を利用できません。'
   },
   zh: {
     close: '关闭',
@@ -366,8 +354,6 @@ export const UI = {
     'detail.poster': '{title} 海报',
     'detail.netflixSearch': '在 Netflix 搜索',
     'detail.tmdbPage': 'TMDb 页面',
-    'detail.share': '分享',
-    'detail.shareText': '{title} — Netflix {scope}第 {rank} 名',
     'detail.tmdbNote': '评分、类型和简介来自 TMDb。',
     'settings.title': '选项',
     'lang.label': '语言',
@@ -385,8 +371,6 @@ export const UI = {
     'settings.disclaimer': 'Orbitshow 是独立项目，与 Netflix 无关联，也未获 Netflix 认可。Netflix 是 Netflix, Inc. 的商标。',
     'settings.cache': '榜单每周更新。保存的副本可让您离线查看最近一期榜单。',
     'ui.storageUnavailable': '存储不可用，仅在本次会话中有效。',
-    'ui.textCopied': '文本已复制到剪贴板。',
-    'ui.copyManually': '此设备不支持分享。'
   },
   es: {
     close: 'Cerrar',
@@ -463,8 +447,6 @@ export const UI = {
     'detail.poster': 'Póster de {title}',
     'detail.netflixSearch': 'Buscar en Netflix',
     'detail.tmdbPage': 'Página de TMDb',
-    'detail.share': 'Compartir',
-    'detail.shareText': '{title} es el n.º {rank} en Netflix ({scope}).',
     'detail.tmdbNote': 'Nota, géneros y sinopsis de TMDb.',
     'settings.title': 'Opciones',
     'lang.label': 'Idioma',
@@ -482,8 +464,6 @@ export const UI = {
     'settings.disclaimer': 'Orbitshow es un proyecto independiente, sin relación con Netflix ni respaldado por ella. Netflix es una marca de Netflix, Inc.',
     'settings.cache': 'Los rankings se actualizan cada semana. Una copia guardada te permite ver el último ranking sin conexión.',
     'ui.storageUnavailable': 'El almacenamiento no está disponible, así que solo durará esta sesión.',
-    'ui.textCopied': 'Texto copiado al portapapeles.',
-    'ui.copyManually': 'Compartir no está disponible en este dispositivo.'
   },
   fr: {
     close: 'Fermer',
@@ -560,8 +540,6 @@ export const UI = {
     'detail.poster': 'Affiche de {title}',
     'detail.netflixSearch': 'Rechercher sur Netflix',
     'detail.tmdbPage': 'Page TMDb',
-    'detail.share': 'Partager',
-    'detail.shareText': '{title} est n° {rank} sur Netflix ({scope}).',
     'detail.tmdbNote': 'Note, genres et synopsis : TMDb.',
     'settings.title': 'Options',
     'lang.label': 'Langue',
@@ -579,8 +557,6 @@ export const UI = {
     'settings.disclaimer': 'Orbitshow est un projet indépendant, non affilié à Netflix ni approuvé par Netflix. Netflix est une marque de Netflix, Inc.',
     'settings.cache': 'Les classements sont mis à jour chaque semaine. Une copie enregistrée permet de lire le dernier classement hors ligne.',
     'ui.storageUnavailable': 'Le stockage n’est pas disponible : cela ne durera que pour cette session.',
-    'ui.textCopied': 'Texte copié dans le presse-papiers.',
-    'ui.copyManually': 'Le partage n’est pas disponible sur cet appareil.'
   },
   de: {
     close: 'Schließen',
@@ -657,8 +633,6 @@ export const UI = {
     'detail.poster': 'Poster von {title}',
     'detail.netflixSearch': 'Auf Netflix suchen',
     'detail.tmdbPage': 'TMDb-Seite',
-    'detail.share': 'Teilen',
-    'detail.shareText': '{title} ist Platz {rank} bei Netflix ({scope}).',
     'detail.tmdbNote': 'Bewertung, Genres und Handlung von TMDb.',
     'settings.title': 'Optionen',
     'lang.label': 'Sprache',
@@ -676,7 +650,5 @@ export const UI = {
     'settings.disclaimer': 'Orbitshow ist ein unabhängiges Projekt, weder mit Netflix verbunden noch von Netflix unterstützt. Netflix ist eine Marke von Netflix, Inc.',
     'settings.cache': 'Die Ranglisten werden wöchentlich aktualisiert. Eine gespeicherte Kopie zeigt die letzte Rangliste auch offline.',
     'ui.storageUnavailable': 'Speicher ist nicht verfügbar, daher gilt dies nur für diese Sitzung.',
-    'ui.textCopied': 'Text in die Zwischenablage kopiert.',
-    'ui.copyManually': 'Teilen ist auf diesem Gerät nicht verfügbar.'
   }
 };
