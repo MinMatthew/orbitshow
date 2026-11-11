@@ -132,6 +132,7 @@ def build(kind, data, confidence, today):
         "mediaType": media(kind),
         "title": data.get("name") or data.get("title"),
         "originalTitle": data.get("original_name") or data.get("original_title"),
+        "originalLanguage": {"cn": "zh"}.get(data.get("original_language"), data.get("original_language")),
         "year": int(release[:4]) if release[:4].isdigit() else None,
         "genreIds": [g["id"] for g in data.get("genres", [])],
         "rating": round(data["vote_average"], 1) if votes else None,
@@ -216,8 +217,8 @@ def main():
             return "match"
         age = date.today() - date.fromisoformat(old["checkedAt"])
         if old["status"] == "matched":
-            # Entries cached before trailers existed are filled in on the next run.
-            return "refresh" if age >= REFRESH_AFTER or "trailers" not in old else None
+            # Entries cached before a field existed are filled in on the next run.
+            return "refresh" if age >= REFRESH_AFTER or any(field not in old for field in ("trailers", "originalLanguage")) else None
         return "match" if age >= RETRY_UNMATCHED_AFTER else None
 
     todo = [(key, job, action) for key, job in jobs.items() if (action := due(key, job))][:limit]

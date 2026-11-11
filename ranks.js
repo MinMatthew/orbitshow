@@ -42,7 +42,12 @@ export async function loadRanks(scope) {
   }
 }
 
-export const displayTitle = entry => entry.tmdb?.titles?.[lang] || entry.tmdb?.title || entry.netflix.title;
+// Title in the UI language: TMDb translation, else the original title when the work was made in that language, else English.
+export function displayTitle(entry) {
+  const info = entry.tmdb;
+  if (!info) return entry.netflix.title;
+  return info.titles?.[lang] || (info.originalLanguage === lang && info.originalTitle) || info.title || entry.netflix.title;
+}
 export const synopsis = entry => entry.tmdb?.overview?.[lang] || entry.tmdb?.overview?.en || '';
 export const isOnNetflix = (entry, code) => entry.availability.netflixCountries.includes(code);
 

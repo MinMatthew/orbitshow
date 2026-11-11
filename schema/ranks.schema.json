@@ -88,6 +88,7 @@
         "mediaType": { "enum": ["tv", "movie"] },
         "title": { "type": "string" },
         "originalTitle": { "type": ["string", "null"] },
+        "originalLanguage": { "type": ["string", "null"], "description": "ISO 639-1 language of the original title; the app shows the original title when it matches the UI language and no translation exists." },
         "year": { "type": ["integer", "null"] },
         "genreIds": { "type": "array", "items": { "type": "integer" }, "description": "TMDb genre ids; names are localised in the app (genres.js)." },
         "rating": { "type": ["number", "null"], "minimum": 0, "maximum": 10, "description": "TMDb vote_average, null while there are no votes." },

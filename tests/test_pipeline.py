@@ -75,6 +75,7 @@ class TmdbStep(unittest.TestCase):
         self.assertEqual(record["titles"], {"ko": "뤼팽"})
         self.assertEqual(record["netflixCountries"], ["fr", "kr"])
         self.assertEqual(record["mediaType"], "tv")
+        self.assertEqual(fetch_tmdb.build("tv", {**data, "original_language": "cn"}, 1.0, "2026-11-10")["originalLanguage"], "zh")
 
     def test_trailers_pick_the_best_official_youtube_trailer_per_language(self):
         def video(site, kind, lang, key, official=False, published="2024-01-01"):
