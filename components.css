@@ -435,7 +435,9 @@ dialog [data-close] svg { width: 16px; height: 16px; stroke-linecap: round; }
   z-index: 1000;
   display: grid;
   place-items: center;
-  background: #000 var(--glow) no-repeat;
+  background-color: var(--bg);
+  background-image: var(--glow);
+  background-repeat: no-repeat;
   transition: opacity .45s ease, visibility 0s linear .45s;
 }
 
