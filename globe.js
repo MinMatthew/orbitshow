@@ -44,6 +44,8 @@ export async function createGlobe(onSelect, onWorld, initial = countries[0]) {
  const worldThreshold=.88;
  function springBack(){cancelAnimationFrame(zoomAnimation);clearTimeout(zoomFallback);if(!motion){setZoom(1);return;}let velocity=0,last=performance.now();const stiffness=190,damping=11;function frame(now){let left=Math.min((now-last)/1000,.034);last=now;while(left>0){const step=Math.min(left,1/240);velocity+=(-stiffness*(zoom-1)-damping*velocity)*step;zoom+=velocity*step;left-=step;}setZoom(zoom);if(Math.abs(zoom-1)<.002&&Math.abs(velocity)<.01){setZoom(1);return;}zoomAnimation=requestAnimationFrame(frame);}zoomAnimation=requestAnimationFrame(frame);zoomFallback=setTimeout(()=>{cancelAnimationFrame(zoomAnimation);setZoom(1);},1600);}
  function releaseZoom(){clearTimeout(releaseTimer);if(zoom>=1)return;const entered=zoom<=worldThreshold;springBack();if(entered)onWorld();}
+ // The World button plays the same pull-in and spring-back as the pinch gesture; `done` runs at the moment of release.
+ function pulse(done){if(!motion){done();return;}cancelAnimationFrame(zoomAnimation);clearTimeout(zoomFallback);const from=zoom,target=.72,begin=performance.now();function frame(now){const p=Math.min((now-begin)/240,1);setZoom(from+(target-from)*(1-Math.pow(1-p,3)));if(p<1){zoomAnimation=requestAnimationFrame(frame);return;}springBack();done();}zoomAnimation=requestAnimationFrame(frame);}
  // Two quick taps in roughly the same spot reset the zoom (also covers mouse double-click and iOS, which skips dblclick).
  function registerTap(e){const now=performance.now();if(lastTap&&now-lastTap.time<320&&Math.hypot(e.clientX-lastTap.x,e.clientY-lastTap.y)<32){lastTap=null;animateZoom(1);}else lastTap={time:now,x:e.clientX,y:e.clientY};}
  function touchGap(){const points=[...touchPoints.values()];return Math.hypot(points[0].x-points[1].x,points[0].y-points[1].y);}
@@ -60,5 +62,5 @@ export async function createGlobe(onSelect, onWorld, initial = countries[0]) {
  canvas.addEventListener('contextlost',e=>e.preventDefault());canvas.addEventListener('contextrestored',resize);
  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')resize();});window.addEventListener('pageshow',resize);
  new ResizeObserver(resize).observe(canvas);resize();$('globe-loading').hidden=true;
- return {select:snap,refresh:draw,setWorld(on){world=!!on;if(world)selected=null;draw();}};
+ return {select:snap,refresh:draw,pulse,setWorld(on){world=!!on;if(world)selected=null;draw();}};
 }

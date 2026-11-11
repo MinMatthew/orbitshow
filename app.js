@@ -318,7 +318,11 @@ $('refresh').onclick = () => show();
 $('country-prev').onclick = () => cycle(-1);
 $('country-next').onclick = () => cycle(1);
 $('country-fav').onclick = toggleFavorite;
-$('world-button').onclick = () => (world ? selectCountry(country) : enterWorld());
+$('world-button').onclick = () => {
+  if (world) selectCountry(country);
+  else if (globe) globe.pulse(enterWorld);
+  else enterWorld();
+};
 $('country-open').onclick = () => { countryOptions(); $('country-search').value = ''; $('country-dialog').showModal(); $('country-search').focus(); };
 $('country-search').oninput = event => countryOptions(event.target.value);
 $('settings-open').onclick = () => $('settings-dialog').showModal();
