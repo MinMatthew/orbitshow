@@ -5,6 +5,7 @@ import { setupPWA } from './pwa.js';
 import { applyLocale, countryLabel, t, lang, SUPPORTED, LANG_NAMES, setLangPref } from './i18n.js';
 import { loadIndex, loadRanks, WORLD, posterUrl, displayTitle, synopsis, isOnNetflix, trailerId } from './ranks.js';
 import { genreNames } from './genres.js';
+import { renderUpdates } from './updates.js';
 
 document.querySelectorAll('[data-icon]').forEach(el => { el.innerHTML = icon(el.dataset.icon); });
 document.querySelectorAll('[data-close]').forEach(el => { el.innerHTML = icon('close'); });
@@ -352,6 +353,23 @@ document.querySelectorAll('dialog').forEach(dialog => dialog.addEventListener('c
 }));
 window.addEventListener('online', () => { if (!doc || stale) show(); });
 
+// PayPal opens in another tab and reports nothing back, so thank the user when they return, or on ?thanks=1 if the PayPal link redirects here.
+let supportPending = false;
+document.querySelectorAll('[data-support]').forEach(link => link.addEventListener('click', () => { supportPending = true; $('support-thanks').hidden = true; }));
+document.addEventListener('visibilitychange', () => {
+  if (supportPending && document.visibilityState === 'visible') { supportPending = false; $('support-thanks').hidden = false; }
+});
+{
+  const params = new URLSearchParams(location.search);
+  if (params.get('thanks') === '1') {
+    params.delete('thanks');
+    const rest = params.toString();
+    history.replaceState(null, '', `${location.pathname}${rest ? `?${rest}` : ''}${location.hash}`);
+    $('support-thanks').hidden = false;
+    setTimeout(() => toast(t('support.thanks')), 3600);
+  }
+}
+
 // ---------- Intro and splash ----------
 const INTRO_KEY = 'orbitshow-intro-seen';
 const intro = $('globe-intro');
@@ -402,6 +420,7 @@ $('splash')?.addEventListener('click', hideSplash);
 // ---------- Start ----------
 applyLocale();
 renderSettings();
+renderUpdates($('update-list'), lang);
 setupPWA();
 renderNav();
 show();

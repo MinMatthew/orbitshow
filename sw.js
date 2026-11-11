@@ -1,5 +1,5 @@
 // Bump VERSION on every release that changes a precached file: the new worker installs a full copy of the shell before it takes over.
-const VERSION = 'v6';
+const VERSION = 'v7';
 const SHELL = `orbitshow-shell-${VERSION}`;
 const RANKS = 'orbitshow-ranks-v1';
 const IMAGES = 'orbitshow-images-v1';
@@ -7,7 +7,7 @@ const MAX_IMAGES = 150;
 const RANK_TIMEOUT = 6000;
 const FILES = [
   './', './index.html', './theme.css', './layout.css', './components.css',
-  './app.js', './lib.js', './i18n.js', './ui-strings.js', './data.js', './globe.js', './genres.js', './ranks.js', './pwa.js',
+  './app.js', './lib.js', './i18n.js', './ui-strings.js', './data.js', './globe.js', './genres.js', './ranks.js', './updates.js', './pwa.js',
   './manifest.webmanifest', './assets/icon-192.png', './assets/icon-512.png', './assets/apple-touch-icon.png',
   './assets/countries-110m.json', './vendor/d3.min.js', './vendor/topojson.min.js'
 ];
