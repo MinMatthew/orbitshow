@@ -3,13 +3,13 @@ export const UPDATES = [
   {
     date: '2026-11-12',
     notes: {
-      en: ['New: choose Disney+ in Options. The screen switches to Disney+ colours and shows its approximate ranking: the most popular recent releases by TMDb popularity (Disney+ publishes no official ranking).'],
-      ko: ['새 기능: 옵션에서 디즈니+를 선택할 수 있어요. 화면이 디즈니+ 색으로 바뀌고, TMDb 인기도 기준 최근 인기 신작 근사 순위를 보여줘요. (디즈니+는 공식 순위를 공개하지 않아요.)'],
-      ja: ['新機能：オプションで Disney+ を選べます。画面が Disney+ の色に変わり、TMDb の人気度による最近の人気新作の概算ランキングを表示します（Disney+ は公式ランキングを公開していません）。'],
-      zh: ['新功能：可在选项中选择 Disney+。界面会切换为 Disney+ 配色，并按 TMDb 热度显示近期热门新作的估算榜单（Disney+ 不公布官方榜单）。'],
-      es: ['Novedad: elige Disney+ en Opciones. La pantalla cambia a los colores de Disney+ y muestra su ranking aproximado: los estrenos recientes más populares según TMDb (Disney+ no publica un ranking oficial).'],
-      fr: ['Nouveau : choisissez Disney+ dans les Options. L’écran passe aux couleurs de Disney+ et affiche son classement approximatif : les sorties récentes les plus populaires selon TMDb (Disney+ ne publie pas de classement officiel).'],
-      de: ['Neu: Wähle in den Optionen Disney+. Die Oberfläche wechselt zu den Disney+-Farben und zeigt die Näherung einer Rangliste: die beliebtesten neuen Titel nach TMDb-Popularität (Disney+ veröffentlicht keine offizielle Rangliste).']
+      en: ['New: choose Disney+ in Options. The screen switches to Disney+ colours and shows its approximate ranking: the most popular recent releases by TMDb popularity (Disney+ publishes no official ranking).', 'Tap the star next to any country in the picker to add or remove it from your favorites.'],
+      ko: ['새 기능: 옵션에서 디즈니+를 선택할 수 있어요. 화면이 디즈니+ 색으로 바뀌고, TMDb 인기도 기준 최근 인기 신작 근사 순위를 보여줘요. (디즈니+는 공식 순위를 공개하지 않아요.)', '국가 선택 목록에서 각 국가 옆의 별표로 바로 즐겨찾기를 켜고 끌 수 있어요.'],
+      ja: ['新機能：オプションで Disney+ を選べます。画面が Disney+ の色に変わり、TMDb の人気度による最近の人気新作の概算ランキングを表示します（Disney+ は公式ランキングを公開していません）。', '国の選択リストで、各国の横の星をタップしてお気に入りを切り替えられます。'],
+      zh: ['新功能：可在选项中选择 Disney+。界面会切换为 Disney+ 配色，并按 TMDb 热度显示近期热门新作的估算榜单（Disney+ 不公布官方榜单）。', '在国家选择列表中，点按每个国家旁的星标即可添加或取消收藏。'],
+      es: ['Novedad: elige Disney+ en Opciones. La pantalla cambia a los colores de Disney+ y muestra su ranking aproximado: los estrenos recientes más populares según TMDb (Disney+ no publica un ranking oficial).', 'Toca la estrella junto a cada país en el selector para añadirlo o quitarlo de favoritos.'],
+      fr: ['Nouveau : choisissez Disney+ dans les Options. L’écran passe aux couleurs de Disney+ et affiche son classement approximatif : les sorties récentes les plus populaires selon TMDb (Disney+ ne publie pas de classement officiel).', 'Touchez l’étoile à côté d’un pays dans la liste pour l’ajouter ou le retirer des favoris.'],
+      de: ['Neu: Wähle in den Optionen Disney+. Die Oberfläche wechselt zu den Disney+-Farben und zeigt die Näherung einer Rangliste: die beliebtesten neuen Titel nach TMDb-Popularität (Disney+ veröffentlicht keine offizielle Rangliste).', 'Tippe in der Länderauswahl auf den Stern neben einem Land, um es zu den Favoriten hinzuzufügen oder zu entfernen.']
     }
   },
   {
