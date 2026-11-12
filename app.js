@@ -420,7 +420,8 @@ function closeIntro() {
   dialog.hidden = true;
   markIntroSeen();
 }
-intro.addEventListener('click', closeIntro);
+// A scroll gesture ends in pointercancel/touchend rather than click.
+for (const type of ['click', 'pointerup', 'pointercancel', 'touchend', 'touchcancel']) intro.addEventListener(type, closeIntro);
 document.addEventListener('keydown', event => { if (event.key === 'Escape') closeIntro(); });
 // Marked as seen when it first shows, so a reload or a skipped tap never brings it back.
 function showIntro() {
