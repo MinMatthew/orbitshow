@@ -44,12 +44,13 @@ function renderFavorite() {
 }
 
 // With favorites saved, the arrows skip every other country.
-function toggleFavorite() {
-  if (!country.code) return;
-  const added = !favorites.has(country.code);
-  if (added) favorites.add(country.code); else favorites.delete(country.code);
+function toggleFavorite(code = country.code, quiet = false) {
+  if (!code) return;
+  const added = !favorites.has(code);
+  if (added) favorites.add(code); else favorites.delete(code);
   writeStore('orbitshow-favorites', [...favorites]);
-  renderFavorite();
+  if (code === country.code) renderFavorite();
+  if (quiet) return;
   toast(added ? (favorites.size === 1 ? t('ui.favAddedFirst') : t('ui.favAdded')) : (favorites.size ? t('ui.favRemoved') : t('ui.favRemovedLast')));
 }
 
@@ -117,10 +118,26 @@ function countryOptions(query = '') {
   const needle = query.toLowerCase();
   countries.filter(c => `${c.name} ${countryLabel(c).name} ${c.en} ${c.code}`.toLowerCase().includes(needle)).forEach(c => {
     const label = countryLabel(c);
+    const row = document.createElement('div');
+    row.className = 'country-row';
     const button = document.createElement('button');
+    button.className = 'country-choose';
     button.innerHTML = `${esc(label.name)}<small>${esc([label.sub, hasRanks(c) ? '' : t('ui.noRankShort')].filter(Boolean).join(' · '))}</small>`;
     button.onclick = () => { $('country-dialog').close(); selectCountry(c); };
-    host.append(button);
+    const star = document.createElement('button');
+    star.className = 'fav-button';
+    const paintStar = () => {
+      const on = favorites.has(c.code);
+      const text = `${label.name} · ${on ? t('ui.removeFav') : t('ui.addFav')}`;
+      star.innerHTML = starIcon(on);
+      star.setAttribute('aria-pressed', String(on));
+      star.setAttribute('aria-label', text);
+      star.title = text;
+    };
+    star.onclick = () => { toggleFavorite(c.code, true); paintStar(); };
+    paintStar();
+    row.append(button, star);
+    host.append(row);
   });
 }
 
@@ -366,7 +383,7 @@ async function changeService(next) {
 $('refresh').onclick = () => show();
 $('country-prev').onclick = () => cycle(-1);
 $('country-next').onclick = () => cycle(1);
-$('country-fav').onclick = toggleFavorite;
+$('country-fav').onclick = () => toggleFavorite();
 $('world-button').onclick = () => {
   if (world) selectCountry(country);
   else if (globe) globe.pulse(enterWorld);

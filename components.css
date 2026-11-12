@@ -287,8 +287,10 @@ dialog input[type="search"] {
 }
 
 #country-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
-#country-options button { padding: 13px 10px; text-align: left; border: 1px solid var(--line); border-radius: 9px; font-size: 12px; }
+.country-row { position: relative; }
+#country-options .country-choose { width: 100%; padding: 13px 40px 13px 10px; text-align: left; border: 1px solid var(--line); border-radius: 9px; font-size: 12px; }
 #country-options small { display: block; margin-top: 5px; color: var(--muted); font-size: 9px; }
+#country-options .fav-button { top: 50%; right: 6px; border: 0; background: none; }
 
 dialog [data-close] { width: 34px; height: 34px; flex: 0 0 34px; color: #fff; background: var(--accent); border-radius: 50%; }
 dialog [data-close] svg { width: 16px; height: 16px; stroke-linecap: round; }
