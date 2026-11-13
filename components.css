@@ -358,6 +358,7 @@ dialog [data-close] svg { width: 16px; height: 16px; stroke-linecap: round; }
 #settings-dialog .share-app {
   display: flex;
   width: 100%;
+  border-radius: 12px;
   border-color: transparent;
   background: var(--gradient);
   box-shadow: 0 8px 20px -6px rgba(var(--accent-rgb), .5);
