@@ -6,6 +6,7 @@ import { applyLocale, countryLabel, t, lang, SUPPORTED, LANG_NAMES, setLangPref 
 import { loadIndex, loadRanks, WORLD, SERVICES, posterUrl, displayTitle, synopsis, isAvailable, trailerId } from './ranks.js';
 import { genreNames } from './genres.js';
 import { renderUpdates } from './updates.js';
+import { setupShare } from './share.js';
 
 document.querySelectorAll('[data-icon]').forEach(el => { el.innerHTML = icon(el.dataset.icon); });
 document.querySelectorAll('[data-close]').forEach(el => { el.innerHTML = icon('close'); });
@@ -469,6 +470,7 @@ $('splash')?.addEventListener('click', hideSplash);
 
 // ---------- Start ----------
 applyLocale();
+setupShare('https://minmatthew.github.io/orbitshow/');
 renderSettings();
 renderUpdates($('update-list'), lang);
 setupPWA();

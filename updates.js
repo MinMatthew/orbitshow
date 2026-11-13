@@ -1,6 +1,18 @@
 // Newest first. Each entry lists what got better for users, per language; `en` is the fallback.
 export const UPDATES = [
   {
+    date: '2026-11-13',
+    notes: {
+      en: ['A Share the app with a friend button is here.'],
+      ko: ['친구에게 앱 공유하기 버튼이 생겼어요.'],
+      ja: ['友だちにアプリを共有するボタンができました。'],
+      zh: ['新增了“与朋友分享应用”按钮。'],
+      es: ['Ya está disponible el botón para compartir la app con un amigo.'],
+      fr: ['Un bouton pour partager l’app avec un ami est disponible.'],
+      de: ['Es gibt jetzt eine Schaltfläche, um die App mit Freunden zu teilen.']
+    }
+  },
+  {
     date: '2026-11-12',
     notes: {
       en: ['New: choose Disney+ in Options. The screen switches to Disney+ colours and shows its approximate ranking: the most popular recent releases by TMDb popularity (Disney+ publishes no official ranking).', 'Tap the star next to any country in the picker to add or remove it from your favorites.'],

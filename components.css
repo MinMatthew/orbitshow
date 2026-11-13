@@ -354,6 +354,83 @@ dialog [data-close] svg { width: 16px; height: 16px; stroke-linecap: round; }
 
 #settings-dialog .support .support-thanks { margin: 10px 0 0; padding: 10px 12px; border-radius: 10px; background: rgba(255, 255, 255, .24); }
 
+/* ---------- App sharing ---------- */
+#settings-dialog .share-app {
+  display: flex;
+  width: 100%;
+  border-color: transparent;
+  background: var(--gradient);
+  box-shadow: 0 8px 20px -6px rgba(var(--accent-rgb), .5);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+#share-dialog {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: max(24px, env(safe-area-inset-top)) 24px max(24px, env(safe-area-inset-bottom));
+  border: 0;
+  border-radius: 0;
+  color: #242424;
+  background: #fff;
+  box-shadow: none;
+}
+
+#share-dialog[open] {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+#share-qr {
+  width: min(100%, 62dvh, 640px);
+  max-height: 62dvh;
+  height: auto;
+  object-fit: contain;
+}
+
+.share-guide {
+  max-width: 420px;
+  margin: 0;
+  color: #29232d;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.6;
+  text-align: center;
+  word-break: keep-all;
+}
+
+.share-status {
+  max-width: 420px;
+  margin: 0;
+  color: var(--accent);
+  font-size: 13px;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+#share-dialog > .share-close {
+  position: fixed;
+  top: max(14px, env(safe-area-inset-top));
+  right: 14px;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  color: #fff;
+  background: var(--accent);
+  border: 0;
+  border-radius: 50%;
+}
+
+#share-dialog > .share-close svg { width: 18px; height: 18px; }
+
 /* ---------- Detail popup ---------- */
 #detail-dialog { max-width: 460px; padding: 0; }
 
