@@ -366,6 +366,8 @@ dialog [data-close] svg { width: 16px; height: 16px; stroke-linecap: round; }
   font-weight: 700;
 }
 
+.share-app + .share-app { margin-top: 12px; }
+
 #share-dialog {
   position: fixed;
   inset: 0;
